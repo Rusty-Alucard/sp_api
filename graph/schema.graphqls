@@ -1,0 +1,101 @@
+scalar DateTime
+
+type Event {
+    id: ID!
+    name: String!
+    name_jp: String!
+    participants: [Team!]!
+    matches: [Match!]!
+}
+
+type Team {
+    id: ID!
+    fifa_trigramme: String!
+    name: String!
+    name_jp: String!
+    confederation: Confederation!
+    joinedEvents: [Event!]!
+    coach: Coach
+    members: [Player!]!
+}
+
+type Coach {
+    id: ID!
+    name: String!
+    birthday: String!
+    joinedEvents: [Event!]!
+}
+
+type Player {
+    id: ID!
+    name: String!
+    number: Int!
+    birthday: String!
+    joinedEvents: [Event!]!
+}
+
+type Match {
+    id: ID!
+    stadium: Stadium!
+    kickoff: DateTime!
+    category: MatchCategory!
+    matchups: [Team!]!
+    timelines: [Timeline!]! 
+}
+
+type Stadium {
+    id: ID!
+    name: String!
+    venue: String!
+    delay_hour: Float!
+}
+
+type Timeline {
+    id: ID!
+    type: MatchEventType!
+    time: String!
+    player: Player!
+}
+
+enum Confederation {
+    CAF
+    CONCACAF
+    CONMEBOL
+    
+    OFC
+    AFC
+    UEFA
+}
+
+enum Position {
+    GK
+    DF
+    MF
+    FW
+}
+
+enum MatchCategory {
+    GroupLeague
+    RoundOf16
+    QuarterFinals
+    SemiFinals
+    PlayoffForThird
+    Final
+}
+
+enum MatchEventType {
+    Goal
+    PenaltyGoal
+    PenaltyMiss
+    OwnGoal
+    YellowCard
+    SecondYellow
+    RedCard
+    SubstitutionIn
+    SubstitutionOut
+    VAR
+}
+
+type Query {
+    events: [Event!]!
+}
