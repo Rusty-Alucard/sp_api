@@ -13,7 +13,7 @@ func NewEventPersistence() repository.EventRepository {
 	return &eventPersistence{}
 }
 
-func (p eventPersistence) FindAll(context.Context) ([]*model.Event, error) {
+func (p eventPersistence) FindAll(ctx context.Context) ([]*model.Event, error) {
 	// ロシア・ワールドカップ
 	event1 := model.Event{}
 	event1.ID = "1"
@@ -31,4 +31,15 @@ func (p eventPersistence) FindAll(context.Context) ([]*model.Event, error) {
 	event2.Matches = []*model.Match{}
 
 	return []*model.Event{&event1, &event2}, nil
+}
+
+func (p eventPersistence) Find(ctx context.Context, id string) (*model.Event, error) {
+	event := model.Event{}
+	event.ID = "1"
+	event.Name = "2018 FIFA World Cup"
+	event.NameJp = "2018 FIFA ワールドカップ"
+	event.Participants = []*model.Team{}
+	event.Matches = []*model.Match{}
+
+	return &event, nil
 }

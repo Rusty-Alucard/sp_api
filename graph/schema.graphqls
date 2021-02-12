@@ -98,4 +98,8 @@ enum MatchEventType {
 
 type Query {
     events: [Event!]!
+    event(id: ID!): Event!
+    
+    teams: [Team!]!
+    team(fifa: String!): Team!
 }

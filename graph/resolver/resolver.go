@@ -1,4 +1,4 @@
-package graph
+package resolver
 
 // This file will not be regenerated automatically.
 //
@@ -10,4 +10,5 @@ import (
 
 type Resolver struct {
 	EventUseCase usecase.EventUseCase
+	TeamUseCase  usecase.TeamUseCase
 }
