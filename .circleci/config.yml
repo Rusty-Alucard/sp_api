@@ -10,10 +10,7 @@ executors:
   test:
     working_directory: ~/repo
     docker:
-      - image: golang:1.16.3
-        <<: *dockerhub_auth
-        environment:
-          TZ: Asia/Tokyo
+      - image: circleci/golang:1.16.3
 
 commands:
   restore_go_mod_cache:
