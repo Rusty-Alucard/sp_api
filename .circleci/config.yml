@@ -11,6 +11,7 @@ executors:
     working_directory: ~/repo
     docker:
       - image: circleci/golang:1.16.3
+        <<: *dockerhub_auth
 
 commands:
   restore_go_mod_cache:
