@@ -42,7 +42,7 @@ commands:
           path: /tmp/test-reports
 
 jobs:
-  test:
+  build:
     executor: test
     steps:
       - checkout
