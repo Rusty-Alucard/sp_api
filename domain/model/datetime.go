@@ -16,7 +16,7 @@ func UnmarshalDateTime(v interface{}) (time.Time, error) {
 	case time.Time:
 		return v, nil
 	default:
-		return time.Now(), fmt.Errorf("DateTime is invalid.")
+		return time.Now(), fmt.Errorf("DateTime is invalid")
 	}
 }
 
