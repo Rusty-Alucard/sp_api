@@ -27,8 +27,8 @@ commands:
   run_staticcheck:
     steps:
       - run:
-        name: Run staticcheck
-        command: make staticcheck
+          name: Run staticcheck
+          command: make staticcheck
   run_unit_test:
     steps:
       - run:
