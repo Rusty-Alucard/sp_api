@@ -1,0 +1,2 @@
+mysql -uroot -proot --local-infile=1 sp -e "LOAD DATA LOCAL INFILE '/docker-entrypoint-initdb.d/events.csv' INTO TABLE events FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' (name,name_jp);"
+mysql -uroot -proot --local-infile=1 sp -e "LOAD DATA LOCAL INFILE '/docker-entrypoint-initdb.d/teams.csv' INTO TABLE teams FIELDS TERMINATED BY ',' ENCLOSED BY '\"' LINES TERMINATED BY '\n' (fifa_trigramma,name,name_jp,confederation);"
