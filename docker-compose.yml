@@ -1,0 +1,23 @@
+version: '3.8'
+services:
+  redis:
+    container_name: sp_redis
+    image: redis:latest
+    ports:
+      - 26379:6379
+    command: redis-server --requirepass 'password'
+  db:
+    container_name: sp_db
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: sp
+      MYSQL_USER: sp
+      MYSQL_PASSWORD: sp
+      TZ: 'UTC'
+    command: mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - ./db/docker/my.cnf:/etc/mysql/conf.d/my.cnf
+      - ./db/docker/ddl:/docker-entrypoint-initdb.d
+    ports:
+      - 23306:3306
