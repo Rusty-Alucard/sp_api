@@ -1,0 +1,12 @@
+version: 1
+update_configs:
+  - package_manager: "go:modules"
+    directory: "/"
+    update_schedule: "weekly"
+    target_branch: "develop"
+    allowed_update:
+      - match:
+          update_type: "security"
+      - match:
+          update_type: "all"
+          dependency_type: "direct"
