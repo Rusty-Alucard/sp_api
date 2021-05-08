@@ -26,6 +26,7 @@ confederation VARCHAR(255) NOT NULL,
 PRIMARY KEY(id)
 );
 CREATE INDEX index_teams_on_fifa_trigramma on teams (fifa_trigramma);
+CREATE INDEX index_teams_on_confederation on teams (confederation);
 
 DROP TABLE IF EXISTS fifa_ranking;
 
