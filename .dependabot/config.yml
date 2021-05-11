@@ -1,12 +1,12 @@
-version: 1
-update_configs:
-  - package_manager: "go:modules"
+version: 2
+updates:
+  - package-ecosystem: "gomod"
     directory: "/"
-    update_schedule: "weekly"
-    target_branch: "develop"
-    allowed_update:
-      - match:
-          update_type: "security"
-      - match:
-          update_type: "all"
-          dependency_type: "direct"
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    allow:
+      - dependency-type: "direct"
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 99
