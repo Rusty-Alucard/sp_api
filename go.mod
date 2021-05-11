@@ -8,5 +8,6 @@ require (
 	github.com/lib/pq v1.10.1
 	github.com/mitchellh/mapstructure v1.1.2 // indirect
 	github.com/vektah/gqlparser/v2 v2.1.0
+	golang.org/x/tools v0.1.0
 	honnef.co/go/tools v0.1.4
 )
