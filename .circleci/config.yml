@@ -30,11 +30,6 @@ commands:
       - run:
           name: Install Dependencies
           command: go mod download
-  run_staticcheck:
-    steps:
-      - run:
-          name: Run staticcheck
-          command: make staticcheck
   run_unit_test:
     steps:
       - run:
@@ -54,7 +49,6 @@ jobs:
       - checkout
       - restore_go_mod_cache
       - install_dependencies
-      - run_staticcheck
       - run_unit_test
       - save_go_mod_cache
       - store_unit_test_results
