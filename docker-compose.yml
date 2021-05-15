@@ -3,12 +3,14 @@ services:
   redis:
     container_name: sp_redis
     image: redis:latest
+    restart: always
     ports:
       - 26379:6379
     command: redis-server --requirepass 'password'
   db:
     container_name: sp_db
     image: postgres:13.2
+    restart: always
     ports:
       - 25432:5432
     volumes:
@@ -18,3 +20,14 @@ services:
       POSTGRES_PASSWORD: sp
       POSTGRES_DB: sp
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8"
+  vault:
+    container_name: sp_vault
+    image: vault:1.7.1
+    restart: always
+    ports:
+      - 28200:8200
+    volumes:
+      - ./vault/docker/config:/vault/config
+    cap_add:
+      - IPC_LOCK
+    command: vault server -config=/vault/config/vault.json 
