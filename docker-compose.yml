@@ -27,6 +27,7 @@ services:
     ports:
       - 28200:8200
     volumes:
+      - ./vault/docker/file:/vault/file
       - ./vault/docker/config:/vault/config
     cap_add:
       - IPC_LOCK
