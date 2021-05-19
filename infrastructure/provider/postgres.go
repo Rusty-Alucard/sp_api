@@ -38,7 +38,7 @@ func connect() (*sql.DB, error) {
 	singletonDB.SetMaxIdleConns(5)  // コネクションプールの最大数
 	singletonDB.SetMaxOpenConns(10) // 接続の最大数
 	singletonDB.SetConnMaxIdleTime(10 * time.Second)
-	singletonDB.SetConnMaxLifeTime(10 * time.Second) // 接続の再利用可能時間
+	singletonDB.SetConnMaxLifetime(10 * time.Second) // 接続の再利用可能時間
 
 	return singletonDB, err
 }
