@@ -15,7 +15,7 @@ func connect() (*sql.DB, error) {
 	lock.Lock()
 	defer lock.Unlock()
 	if singletonDB != nil {
-		return singletonDB
+		return singletonDB, nil
 	}
 
 	singletonDB, err := sql.Open(
