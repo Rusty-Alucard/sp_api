@@ -1,0 +1,3 @@
+database:
+    driver: postgresql
+    dsn: postgresql://sp:sp@localhost:25432/sp?sslmode=disable
