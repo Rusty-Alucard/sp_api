@@ -3,7 +3,6 @@ package persistence
 import (
 	"context"
 
-	"github.com/Rusty-Alucard/sp_api/config"
 	"github.com/Rusty-Alucard/sp_api/domain/model"
 	"github.com/Rusty-Alucard/sp_api/domain/repository"
 )
