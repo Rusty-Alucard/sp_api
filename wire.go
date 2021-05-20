@@ -8,7 +8,7 @@ import (
 	"github.com/google/wire"
 )
 
-func InitializeEventUseCase() usecase.EventUseCase {
+func InitializeEventUseCase(cfg Config) usecase.EventUseCase {
 	wire.Build(
 		usecase.NewEventUseCase,
 		persistence.NewEventPersistence,
@@ -16,7 +16,7 @@ func InitializeEventUseCase() usecase.EventUseCase {
 	return nil
 }
 
-func InitializeTeamUseCase() usecase.TeamUseCase {
+func InitializeTeamUseCase(cfg Config) usecase.TeamUseCase {
 	wire.Build(
 		usecase.NewTeamUseCase,
 		persistence.NewTeamPersistence,

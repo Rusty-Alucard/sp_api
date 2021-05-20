@@ -12,13 +12,13 @@ import (
 
 // Injectors from wire.go:
 
-func InitializeEventUseCase() usecase.EventUseCase {
+func InitializeEventUseCase(cfg Config) usecase.EventUseCase {
 	eventRepository := persistence.NewEventPersistence()
 	eventUseCase := usecase.NewEventUseCase(eventRepository)
 	return eventUseCase
 }
 
-func InitializeTeamUseCase() usecase.TeamUseCase {
+func InitializeTeamUseCase(cfg Config) usecase.TeamUseCase {
 	teamRepository := persistence.NewTeamPersistence()
 	teamUseCase := usecase.NewTeamUseCase(teamRepository)
 	return teamUseCase
