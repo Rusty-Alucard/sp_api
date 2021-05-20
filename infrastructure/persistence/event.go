@@ -9,10 +9,7 @@ import (
 
 type eventPersistence struct{}
 
-func NewEventPersistence(cfg Config) repository.EventRepository {
-	if cfg != nil {
-		// TODO
-	}
+func NewEventPersistence() repository.EventRepository {
 	return &eventPersistence{}
 }
 

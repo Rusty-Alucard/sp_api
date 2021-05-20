@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -25,14 +26,16 @@ func main() {
 		panic(err) // TODO: logger output
 	}
 
+	fmt.Println(cfg.Database.Host)
+
 	port, ret := os.LookupEnv("PORT")
 	if ret == false {
 		port = defaultPort
 	}
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{
-		EventUseCase: InitializeEventUseCase(*cfg),
-		TeamUseCase:  InitializeTeamUseCase(*cfg),
+		EventUseCase: InitializeEventUseCase(),
+		TeamUseCase:  InitializeTeamUseCase(),
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))

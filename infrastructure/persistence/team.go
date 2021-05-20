@@ -9,10 +9,7 @@ import (
 
 type teamPersistence struct{}
 
-func NewTeamPersistence(cfg Config) repository.TeamRepository {
-	if cfg != nil {
-		// TODO
-	}
+func NewTeamPersistence() repository.TeamRepository {
 	return &teamPersistence{}
 }
 
