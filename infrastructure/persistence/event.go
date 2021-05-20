@@ -3,13 +3,14 @@ package persistence
 import (
 	"context"
 
+	"github.com/Rusty-Alucard/sp_api/config"
 	"github.com/Rusty-Alucard/sp_api/domain/model"
 	"github.com/Rusty-Alucard/sp_api/domain/repository"
 )
 
 type eventPersistence struct{}
 
-func NewEventPersistence(cfg config) repository.EventRepository {
+func NewEventPersistence(cfg Config) repository.EventRepository {
 	if cfg != nil {
 		// TODO
 	}

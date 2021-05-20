@@ -3,13 +3,14 @@ package persistence
 import (
 	"context"
 
+	"github.com/Rusty-Alucard/sp_api/config"
 	"github.com/Rusty-Alucard/sp_api/domain/model"
 	"github.com/Rusty-Alucard/sp_api/domain/repository"
 )
 
 type teamPersistence struct{}
 
-func NewTeamPersistence(cfg config) repository.TeamRepository {
+func NewTeamPersistence(cfg Config) repository.TeamRepository {
 	if cfg != nil {
 		// TODO
 	}
