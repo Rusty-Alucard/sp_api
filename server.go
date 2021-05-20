@@ -26,9 +26,6 @@ func main() {
 		panic(err) // TODO: logger output
 	}
 
-	fmt.Printf("%s\n", cfg.Database.Driver)
-	fmt.Printf("%s\n", cfg.Database.Dsn)
-
 	port, ret := os.LookupEnv("PORT")
 	if ret == false {
 		port = defaultPort

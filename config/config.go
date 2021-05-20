@@ -11,8 +11,12 @@ import (
 // マッピング用の構造体
 type Config struct {
 	Database struct {
-		Driver string
-		Dsn    string
+		Driver   string
+		User     string
+		Password string
+		Host     string
+		Port     int
+		Db       string
 	}
 }
 

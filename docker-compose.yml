@@ -9,12 +9,8 @@ services:
     command: redis-server --requirepass 'password'
   db:
     container_name: sp_db
-<<<<<<< HEAD
     image: postgres:13.2-alpine
-=======
-    image: postgres:13.2
     restart: always
->>>>>>> 47c378d5218bb922d518d652cde179ffb538260c
     ports:
       - 25432:5432
     volumes:

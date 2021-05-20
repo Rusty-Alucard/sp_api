@@ -1,3 +1,7 @@
 database:
     driver: postgresql
-    dsn: postgresql://sp:sp@localhost:25432/sp?sslmode=disable
+    user: sp
+    password: sp
+    host: localhost
+    port: 25432
+    db: sp
