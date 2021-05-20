@@ -9,9 +9,9 @@ import (
 
 type teamPersistence struct{}
 
-func NewTeamPersistence(cfg Config) repository.TeamRepository {
+func NewTeamPersistence(cfg config) repository.TeamRepository {
 	if cfg != nil {
-		panic()
+		// TODO
 	}
 	return &teamPersistence{}
 }
