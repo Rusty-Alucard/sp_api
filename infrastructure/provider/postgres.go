@@ -10,7 +10,7 @@ import (
 var singletonDB *sql.DB
 var lock sync.Mutex
 
-func connect(cfg Config) (*sql.DB, error) {
+func connect() (*sql.DB, error) {
 	lock.Lock()
 	defer lock.Unlock()
 	if singletonDB != nil {
@@ -21,11 +21,11 @@ func connect(cfg Config) (*sql.DB, error) {
 		"postgres",
 		fmt.Sprintf(
 			"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-			cfg.Host,
-			cfg.Port,
-			cfg.User,
-			cfg.Password,
-			cfg.Db,
+			os.Getenv("PG_HOST"),
+			os.Getenv("PG_PORT"),
+			os.Getenv("PG_USER"),
+			os.Getenv("PG_PASSWORD"),
+			os.Getenv("PG_DATABASE"),
 		),
 	)
 
