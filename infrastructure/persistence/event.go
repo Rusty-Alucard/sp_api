@@ -10,6 +10,9 @@ import (
 type eventPersistence struct{}
 
 func NewEventPersistence(cfg Config) repository.EventRepository {
+	if cfg != nil {
+		panic()
+	}
 	return &eventPersistence{}
 }
 
