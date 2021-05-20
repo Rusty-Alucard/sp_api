@@ -9,7 +9,7 @@ import (
 
 type teamPersistence struct{}
 
-func NewTeamPersistence() repository.TeamRepository {
+func NewTeamPersistence(cfg Config) repository.TeamRepository {
 	return &teamPersistence{}
 }
 

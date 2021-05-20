@@ -9,7 +9,7 @@ import (
 
 type eventPersistence struct{}
 
-func NewEventPersistence() repository.EventRepository {
+func NewEventPersistence(cfg Config) repository.EventRepository {
 	return &eventPersistence{}
 }
 
