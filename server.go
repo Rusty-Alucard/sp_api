@@ -31,8 +31,8 @@ func main() {
 	}
 
 	srv := handler.NewDefaultServer(generated.NewExecutableSchema(generated.Config{Resolvers: &resolver.Resolver{
-		EventUseCase: InitializeEventUseCase(),
-		TeamUseCase:  InitializeTeamUseCase(),
+		EventUseCase: InitializeEventUseCase(*cfg),
+		TeamUseCase:  InitializeTeamUseCase(*cfg),
 	}}))
 
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
