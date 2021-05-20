@@ -11,7 +11,7 @@ type eventPersistence struct{}
 
 func NewEventPersistence(cfg config) repository.EventRepository {
 	if cfg != nil {
-		panic()
+		// TODO
 	}
 	return &eventPersistence{}
 }
