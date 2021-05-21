@@ -20,9 +20,9 @@ type Config struct {
 	}
 }
 
-func Load(env string) (*Config, error) {
-	var cfg Config
+var cfg *Config
 
+func Init(env string) error {
 	viper.SetConfigType("yml")
 	viper.SetConfigName(env)
 	viper.AddConfigPath("config/environments/")
@@ -33,12 +33,12 @@ func Load(env string) (*Config, error) {
 
 	// 読み取り
 	if err := viper.ReadInConfig(); err != nil {
-		return nil, fmt.Errorf("config file read error : %s \n", err)
+		return fmt.Errorf("config file read error : %s \n", err)
 	}
 
 	// 構造体にマッピング
 	if err := viper.Unmarshal(&cfg); err != nil {
-		return nil, fmt.Errorf("unmarshal error : %s \n", err)
+		return fmt.Errorf("unmarshal error : %s \n", err)
 	}
 
 	// 更新検知と再読み込み
@@ -47,5 +47,9 @@ func Load(env string) (*Config, error) {
 		fmt.Println("Config file changed:", e.Name) // TODO: logger output
 	})
 
-	return &cfg, nil
+	return nil
+}
+
+func GetConfig() *Config {
+	return cfg
 }

@@ -21,12 +21,9 @@ func main() {
 	env := flag.String("e", "local", "")
 	flag.Parse()
 
-	cfg, err := config.Load(*env)
-	if err != nil {
-		panic(err) // TODO: logger output
+	if err := config.Init(*env); err != nil {
+		panic(err)
 	}
-
-	fmt.Println(cfg.Database.Host)
 
 	port, ret := os.LookupEnv("PORT")
 	if ret == false {

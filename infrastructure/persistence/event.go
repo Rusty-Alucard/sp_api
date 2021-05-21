@@ -5,6 +5,7 @@ import (
 
 	"github.com/Rusty-Alucard/sp_api/domain/model"
 	"github.com/Rusty-Alucard/sp_api/domain/repository"
+	"github.com/Rusty-Alucard/sp_api/infrastructure/provider"
 )
 
 type eventPersistence struct{}
@@ -14,32 +15,43 @@ func NewEventPersistence() repository.EventRepository {
 }
 
 func (p eventPersistence) FindAll(ctx context.Context) ([]*model.Event, error) {
-	// ロシア・ワールドカップ
-	event1 := model.Event{}
-	event1.ID = "1"
-	event1.Name = "2018 FIFA World Cup"
-	event1.NameJp = "2018 FIFA ワールドカップ"
-	event1.Participants = []*model.Team{}
-	event1.Matches = []*model.Match{}
+	db, err := postgres.connect()
+	if err != nil {
+		return nil, err
+	}
 
-	// カタール・ワールドカップ
-	event2 := model.Event{}
-	event2.ID = "2"
-	event2.Name = "2022 FIFA World Cup"
-	event2.NameJp = "2022 FIFA ワールドカップ"
-	event2.Participants = []*model.Team{}
-	event2.Matches = []*model.Match{}
+	rows, err := db.Query("SELECT * FROM events")
+	if err != nil {
+		return nil, err
+	}
 
-	return []*model.Event{&event1, &event2}, nil
+	var ret []*model.Event
+	for rows.Next() {
+		var e *model.Event
+		rows.Scan(&e.ID, &e.Name, &e.NameJp)
+		ret = append(ret, e)
+	}
+
+	return ret, nil
 }
 
 func (p eventPersistence) Find(ctx context.Context, id string) (*model.Event, error) {
-	event := model.Event{}
-	event.ID = "1"
-	event.Name = "2018 FIFA World Cup"
-	event.NameJp = "2018 FIFA ワールドカップ"
-	event.Participants = []*model.Team{}
-	event.Matches = []*model.Match{}
+	db, err := postgres.connect()
+	if err != nil {
+		return nil, err
+	}
 
-	return &event, nil
+	rows, err := db.Query("SELECT * FROM events WHERE id = $1", id)
+	if err != nil {
+		return nil, err
+	}
+
+	var ret *model.Event
+	for rows.Next() {
+		var e *model.Event
+		rows.Scan(&e.ID, &e.Name, &e.NameJp)
+		ret = e
+	}
+
+	return ret, nil
 }

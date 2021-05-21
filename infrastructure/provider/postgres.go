@@ -1,11 +1,12 @@
-package config
+package provider
 
 import (
 	"database/sql"
 	"fmt"
-	"os"
 	"sync"
 	"time"
+
+	"github.com/Rusty-Alucard/sp_api/config"
 )
 
 var singletonDB *sql.DB
@@ -19,14 +20,14 @@ func connect() (*sql.DB, error) {
 	}
 
 	singletonDB, err := sql.Open(
-		"postgres",
+		config.GetConfig().Database.Driver,
 		fmt.Sprintf(
 			"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
-			os.Getenv("PG_HOST"),
-			os.Getenv("PG_PORT"),
-			os.Getenv("PG_USER"),
-			os.Getenv("PG_PASSWORD"),
-			os.Getenv("PG_DATABASE"),
+			config.GetConfig().Database.Host,
+			config.GetConfig().Database.Port,
+			config.GetConfig().Database.User,
+			config.GetConfig().Database.Password,
+			config.GetConfig().Database.Db,
 		),
 	)
 
@@ -40,5 +41,5 @@ func connect() (*sql.DB, error) {
 	singletonDB.SetConnMaxIdleTime(10 * time.Second)
 	singletonDB.SetConnMaxLifetime(10 * time.Second) // 接続の再利用可能時間
 
-	return singletonDB, err
+	return singletonDB, nil
 }
