@@ -15,15 +15,11 @@ func NewEventPersistence() repository.EventRepository {
 }
 
 func (p eventPersistence) FindAll(ctx context.Context) ([]*model.Event, error) {
-	db, err := postgres.connect()
+	rows, err := provider.GetDb().Query("SELECT * FROM events")
 	if err != nil {
 		return nil, err
 	}
-
-	rows, err := db.Query("SELECT * FROM events")
-	if err != nil {
-		return nil, err
-	}
+	defer rows.Close()
 
 	var ret []*model.Event
 	for rows.Next() {
@@ -36,15 +32,11 @@ func (p eventPersistence) FindAll(ctx context.Context) ([]*model.Event, error) {
 }
 
 func (p eventPersistence) Find(ctx context.Context, id string) (*model.Event, error) {
-	db, err := postgres.connect()
+	rows, err := provider.GetDb().Query("SELECT * FROM events WHERE id = $1", id)
 	if err != nil {
 		return nil, err
 	}
-
-	rows, err := db.Query("SELECT * FROM events WHERE id = $1", id)
-	if err != nil {
-		return nil, err
-	}
+	defer rows.Close()
 
 	var ret *model.Event
 	for rows.Next() {

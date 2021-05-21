@@ -1,5 +1,5 @@
 database:
-    driver: postgresql
+    driver: postgres
     user: sp
     password: sp
     host: localhost

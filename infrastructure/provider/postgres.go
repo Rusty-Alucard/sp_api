@@ -6,23 +6,19 @@ import (
 	"sync"
 	"time"
 
+	_ "github.com/lib/pq"
+
 	"github.com/Rusty-Alucard/sp_api/config"
 )
 
 var singletonDB *sql.DB
 var lock sync.Mutex
 
-func connect() (*sql.DB, error) {
-	lock.Lock()
-	defer lock.Unlock()
-	if singletonDB != nil {
-		return singletonDB, nil
-	}
-
+func Init() error {
 	singletonDB, err := sql.Open(
 		config.GetConfig().Database.Driver,
 		fmt.Sprintf(
-			"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+			"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
 			config.GetConfig().Database.Host,
 			config.GetConfig().Database.Port,
 			config.GetConfig().Database.User,
@@ -32,8 +28,13 @@ func connect() (*sql.DB, error) {
 	)
 
 	if err != nil {
-		return nil, err
+		return err
 	}
+
+	if err := singletonDB.Ping(); err != nil {
+		return err
+	}
+	defer singletonDB.Close()
 
 	// setting connection pooling
 	singletonDB.SetMaxIdleConns(5)  // コネクションプールの最大数
@@ -41,5 +42,9 @@ func connect() (*sql.DB, error) {
 	singletonDB.SetConnMaxIdleTime(10 * time.Second)
 	singletonDB.SetConnMaxLifetime(10 * time.Second) // 接続の再利用可能時間
 
-	return singletonDB, nil
+	return nil
+}
+
+func GetDb() *sql.DB {
+	return singletonDB
 }
