@@ -11,7 +11,6 @@ import (
 	"github.com/Rusty-Alucard/sp_api/config"
 	"github.com/Rusty-Alucard/sp_api/graph/generated"
 	"github.com/Rusty-Alucard/sp_api/graph/resolver"
-	"github.com/Rusty-Alucard/sp_api/infrastructure/provider"
 )
 
 const defaultPort = "8080"
@@ -23,11 +22,6 @@ func main() {
 
 	// config初期化
 	if err := config.Init(*env); err != nil {
-		panic(err)
-	}
-
-	// db初期化
-	if err := provider.Init(); err != nil {
 		panic(err)
 	}
 

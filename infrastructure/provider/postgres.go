@@ -14,7 +14,15 @@ import (
 var singletonDB *sql.DB
 var lock sync.Mutex
 
-func Init() error {
+func Connect() (*sql.DB, error) {
+	lock.Lock()
+	defer lock.Unlock()
+
+	if singletonDB != nil {
+		fmt.Println("--singleton")
+		return singletonDB, nil
+	}
+
 	singletonDB, err := sql.Open(
 		config.GetConfig().Database.Driver,
 		fmt.Sprintf(
@@ -26,15 +34,13 @@ func Init() error {
 			config.GetConfig().Database.Db,
 		),
 	)
-
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	if err := singletonDB.Ping(); err != nil {
-		return err
+		return nil, err
 	}
-	defer singletonDB.Close()
 
 	// setting connection pooling
 	singletonDB.SetMaxIdleConns(5)  // コネクションプールの最大数
@@ -42,9 +48,7 @@ func Init() error {
 	singletonDB.SetConnMaxIdleTime(10 * time.Second)
 	singletonDB.SetConnMaxLifetime(10 * time.Second) // 接続の再利用可能時間
 
-	return nil
-}
+	fmt.Println("--init")
 
-func GetDb() *sql.DB {
-	return singletonDB
+	return singletonDB, nil
 }
