@@ -1,12 +1,14 @@
 package main
 
 import (
+	"flag"
 	"log"
 	"net/http"
 	"os"
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+	"github.com/Rusty-Alucard/sp_api/config"
 	"github.com/Rusty-Alucard/sp_api/graph/generated"
 	"github.com/Rusty-Alucard/sp_api/graph/resolver"
 )
@@ -14,8 +16,17 @@ import (
 const defaultPort = "8080"
 
 func main() {
-	port := os.Getenv("PORT")
-	if port == "" {
+
+	env := flag.String("e", "local", "")
+	flag.Parse()
+
+	// config初期化
+	if err := config.Init(*env); err != nil {
+		panic(err)
+	}
+
+	port, ret := os.LookupEnv("PORT")
+	if ret == false {
 		port = defaultPort
 	}
 

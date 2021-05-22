@@ -5,7 +5,6 @@ package resolver
 
 import (
 	"context"
-	//	"fmt"
 
 	"github.com/Rusty-Alucard/sp_api/domain/model"
 	"github.com/Rusty-Alucard/sp_api/graph/generated"

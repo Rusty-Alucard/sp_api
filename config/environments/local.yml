@@ -1,0 +1,7 @@
+database:
+    driver: postgres
+    user: sp
+    password: sp
+    host: localhost
+    port: 25432
+    db: sp
