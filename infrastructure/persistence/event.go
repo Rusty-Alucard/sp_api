@@ -16,10 +16,9 @@ func NewEventPersistence() repository.EventRepository {
 }
 
 func (p eventPersistence) FindAll(ctx context.Context) ([]*model.Event, error) {
-
 	db, err := provider.Connect()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	rows, err := db.Query("SELECT * FROM events")
@@ -42,7 +41,7 @@ func (p eventPersistence) Find(ctx context.Context, id string) (*model.Event, er
 
 	db, err := provider.Connect()
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 
 	ret := model.Event{}

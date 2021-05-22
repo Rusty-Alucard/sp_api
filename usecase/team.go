@@ -30,8 +30,8 @@ func (u teamUseCase) FindAll(ctx context.Context) (teams []*model.Team, err erro
 	return teams, nil
 }
 
-func (u teamUseCase) Find(ctx context.Context, id string) (team *model.Team, err error) {
-	team, err = u.repo.Find(ctx, id)
+func (u teamUseCase) Find(ctx context.Context, fifa string) (team *model.Team, err error) {
+	team, err = u.repo.Find(ctx, fifa)
 	if err != nil {
 		return nil, err
 	}
