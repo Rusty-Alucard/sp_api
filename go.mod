@@ -9,6 +9,6 @@ require (
 	github.com/lib/pq v1.10.7
 	github.com/spf13/viper v1.15.0
 	github.com/vektah/gqlparser/v2 v2.5.15
-	golang.org/x/tools v0.1.12
+	golang.org/x/tools v0.6.0
 	honnef.co/go/tools v0.1.4
 )
