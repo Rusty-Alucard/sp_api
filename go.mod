@@ -8,7 +8,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/lib/pq v1.10.7
 	github.com/spf13/viper v1.15.0
-	github.com/vektah/gqlparser/v2 v2.1.0
+	github.com/vektah/gqlparser/v2 v2.5.15
 	golang.org/x/tools v0.1.12
 	honnef.co/go/tools v0.1.4
 )
