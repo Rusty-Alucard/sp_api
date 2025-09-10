@@ -1,54 +1,98 @@
-# Use the latest 2.1 version of CircleCI pipeline process engine. See: https://circleci.com/docs/2.0/configuration-reference
+# Use the latest 2.1 version of CircleCI pipeline process engine
 version: 2.1
 
-dockerhub_auth: &dockerhub_auth
-  auth:
-    username: $DOCKERHUB_USERNAME
-    password: $DOCKERHUB_PASSWORD
+# Define reusable parameters
+parameters:
+  go_version:
+    type: string
+    default: "1.24"
 
-executors:
-  test:
-    working_directory: ~/sp_api
-    docker:
-      - image: circleci/golang:1.24.5
-        <<: *dockerhub_auth
-
+# Define reusable commands
 commands:
-  restore_go_mod_cache:
+  restore_cache:
     steps:
       - restore_cache:
           keys:
-            - go-mod-v4-{{ checksum "go.sum" }}
-  save_go_mod_cache:
+            - go-mod-v5-{{ checksum "go.sum" }}
+            - go-mod-v5-
+  
+  save_cache:
     steps:
       - save_cache:
-          key: go-mod-v4-{{ checksum "go.sum" }}
+          key: go-mod-v5-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
+  
   install_dependencies:
     steps:
       - run:
           name: Install Dependencies
           command: go mod download
-  run_unit_test:
+  
+  run_tests:
     steps:
       - run:
-          name: Run tests
+          name: Run Tests
           command: |
             mkdir -p /tmp/test-reports
             gotestsum --junitfile /tmp/test-reports/unit-tests.xml
-  store_unit_test_results:
+  
+  run_lint:
+    steps:
+      - run:
+          name: Run Lint
+          command: make lint
+  
+  store_test_results:
     steps:
       - store_test_results:
           path: /tmp/test-reports
 
+# Define jobs
 jobs:
-  build:
-    executor: test
+  test:
+    docker:
+      - image: cimg/golang:<< pipeline.parameters.go_version >>
+    working_directory: ~/sp_api
     steps:
       - checkout
-      - restore_go_mod_cache
+      - restore_cache
       - install_dependencies
-      - run_unit_test
-      - save_go_mod_cache
-      - store_unit_test_results
+      - run_tests
+      - store_test_results
+      - save_cache
+  
+  lint:
+    docker:
+      - image: cimg/golang:<< pipeline.parameters.go_version >>
+    working_directory: ~/sp_api
+    steps:
+      - checkout
+      - restore_cache
+      - install_dependencies
+      - run_lint
+      - save_cache
+  
+  build:
+    docker:
+      - image: cimg/golang:<< pipeline.parameters.go_version >>
+    working_directory: ~/sp_api
+    steps:
+      - checkout
+      - restore_cache
+      - install_dependencies
+      - run:
+          name: Build Application
+          command: go build -o sp_api
+      - save_cache
+
+# Define workflows
+workflows:
+  test-and-build:
+    jobs:
+      - test
+      - lint
+      - build:
+          requires:
+            - test
+            - lint
