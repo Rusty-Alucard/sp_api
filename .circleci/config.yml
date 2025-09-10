@@ -10,7 +10,7 @@ executors:
   test:
     working_directory: ~/sp_api
     docker:
-      - image: circleci/golang:1.24
+      - image: circleci/golang:1.24.5
         <<: *dockerhub_auth
 
 commands:
