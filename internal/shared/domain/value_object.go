@@ -52,4 +52,3 @@ func (v StringValueObject) Equals(other ValueObject) bool {
 	}
 	return false
 }
-

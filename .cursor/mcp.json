@@ -1,0 +1,39 @@
+{
+    "mcpServers": {
+      "serena": {
+        "command": "uvx",
+        "args": [
+          "--from",
+          "git+https://github.com/oraios/serena",
+          "serena-mcp-server",
+          "--context",
+          "ide-assistant"
+        ]
+      },
+      "gemini-cli": {
+        "command": "npx",
+        "args": [
+          "@choplin/mcp-gemini-cli"
+        ]
+      },
+      "context7": {
+        "command": "npx",
+        "args": [
+          "--yes",
+          "@upstash/context7-mcp"
+        ]
+      },
+      "cipher": {
+        "command": "cipher",
+        "args": [
+          "--mode",
+          "mcp",
+          "--config",
+          "../memAgent/cipher.yml"
+        ],
+        "env": {
+          "OLLAMA_BASE_URL": "http://localhost:11434/v1"
+        }
+      }
+    }
+  }

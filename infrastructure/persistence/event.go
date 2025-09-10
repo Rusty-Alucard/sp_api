@@ -30,7 +30,9 @@ func (p eventPersistence) FindAll(ctx context.Context) ([]*model.Event, error) {
 	var ret []*model.Event
 	for rows.Next() {
 		var e model.Event
-		rows.Scan(&e.ID, &e.Name, &e.NameJp)
+		if err := rows.Scan(&e.ID, &e.Name, &e.NameJp); err != nil {
+			return nil, err
+		}
 		ret = append(ret, &e)
 	}
 

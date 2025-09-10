@@ -8,6 +8,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql/handler"
 	"github.com/99designs/gqlgen/graphql/playground"
+
 	"github.com/Rusty-Alucard/sp_api/config"
 	"github.com/Rusty-Alucard/sp_api/graph/generated"
 	"github.com/Rusty-Alucard/sp_api/graph/resolver"
@@ -26,7 +27,7 @@ func main() {
 	}
 
 	port, ret := os.LookupEnv("PORT")
-	if ret == false {
+	if !ret {
 		port = defaultPort
 	}
 
@@ -34,7 +35,6 @@ func main() {
 		EventUseCase: InitializeEventUseCase(),
 		TeamUseCase:  InitializeTeamUseCase(),
 	}}))
-
 	http.Handle("/", playground.Handler("GraphQL playground", "/query"))
 	http.Handle("/query", srv)
 

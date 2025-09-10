@@ -1,5 +1,6 @@
 scalar DateTime
 
+
 type Event {
     id: ID!
     name: String!

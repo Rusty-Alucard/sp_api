@@ -142,4 +142,3 @@ func NewDomainError(code, message string, details map[string]interface{}) Domain
 		Details: details,
 	}
 }
-

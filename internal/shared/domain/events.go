@@ -97,4 +97,3 @@ func NewEventDispatcher(eventBus EventBus) *EventDispatcher {
 func (d *EventDispatcher) Dispatch(ctx context.Context, events ...DomainEvent) error {
 	return d.eventBus.Publish(ctx, events...)
 }
-

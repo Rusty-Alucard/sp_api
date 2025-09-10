@@ -83,7 +83,7 @@ func (s EventStatus) String() string {
 	case EventStatusCompleted:
 		return "COMPLETED"
 	case EventStatusCancelled:
-		return "CANCELLED"
+		return "CANCELED"
 	default:
 		return "UNKNOWN"
 	}
@@ -273,4 +273,3 @@ func (t MatchTime) Equals(other domain.ValueObject) bool {
 	}
 	return false
 }
-

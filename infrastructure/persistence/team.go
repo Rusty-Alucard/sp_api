@@ -30,7 +30,9 @@ func (p teamPersistence) FindAll(ctx context.Context) ([]*model.Team, error) {
 	var ret []*model.Team
 	for rows.Next() {
 		var e model.Team
-		rows.Scan(&e.ID, &e.FifaTrigramme, &e.Name, &e.NameJp, &e.Confederation)
+		if err := rows.Scan(&e.ID, &e.FifaTrigramme, &e.Name, &e.NameJp, &e.Confederation); err != nil {
+			return nil, err
+		}
 		ret = append(ret, &e)
 	}
 

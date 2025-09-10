@@ -70,7 +70,7 @@ type EventCancelled struct {
 	reason string
 }
 
-// NewEventCancelled creates a new event cancelled domain event
+// NewEventCancelled creates a new event canceled domain event
 func NewEventCancelled(eventID domain.AggregateID, reason string) EventCancelled {
 	return EventCancelled{
 		BaseDomainEvent: domain.NewBaseDomainEvent(
@@ -186,4 +186,3 @@ func randomString(length int) string {
 	}
 	return string(b)
 }
-
