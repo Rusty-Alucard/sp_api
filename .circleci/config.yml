@@ -25,8 +25,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - go-mod-v6-{{ checksum "go.sum" }}
-            - go-mod-v6-
+            - go-mod-v7-{{ checksum "go.sum" }}
+            - go-mod-v7-
       - run:
           name: Install Dependencies
           command: go mod download
@@ -41,7 +41,7 @@ jobs:
           path: /tmp/test-reports
           destination: test-results
       - save_cache:
-          key: go-mod-v6-{{ checksum "go.sum" }}
+          key: go-mod-v7-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
   
@@ -51,8 +51,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - go-mod-v6-{{ checksum "go.sum" }}
-            - go-mod-v6-
+            - go-mod-v7-{{ checksum "go.sum" }}
+            - go-mod-v7-
       - run:
           name: Install Dependencies
           command: go mod download
@@ -64,7 +64,7 @@ jobs:
           command: make lint-fix
           when: on_fail
       - save_cache:
-          key: go-mod-v6-{{ checksum "go.sum" }}
+          key: go-mod-v7-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
   
@@ -74,8 +74,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - go-mod-v6-{{ checksum "go.sum" }}
-            - go-mod-v6-
+            - go-mod-v7-{{ checksum "go.sum" }}
+            - go-mod-v7-
       - run:
           name: Install Dependencies
           command: go mod download
@@ -89,7 +89,7 @@ jobs:
           path: sp_api
           destination: binary
       - save_cache:
-          key: go-mod-v6-{{ checksum "go.sum" }}
+          key: go-mod-v7-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
   
@@ -99,8 +99,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - go-mod-v6-{{ checksum "go.sum" }}
-            - go-mod-v6-
+            - go-mod-v7-{{ checksum "go.sum" }}
+            - go-mod-v7-
       - run:
           name: Install Dependencies
           command: go mod download
@@ -110,7 +110,7 @@ jobs:
             go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
             gosec ./...
       - save_cache:
-          key: go-mod-v6-{{ checksum "go.sum" }}
+          key: go-mod-v7-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
   
@@ -120,8 +120,8 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - go-mod-v6-{{ checksum "go.sum" }}
-            - go-mod-v6-
+            - go-mod-v7-{{ checksum "go.sum" }}
+            - go-mod-v7-
       - run:
           name: Install Dependencies
           command: go mod download
@@ -137,7 +137,40 @@ jobs:
           path: coverage.html
           destination: coverage
       - save_cache:
-          key: go-mod-v6-{{ checksum "go.sum" }}
+          key: go-mod-v7-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+
+  # Matrix job for testing multiple Go versions
+  test-matrix:
+    parameters:
+      go_version:
+        type: string
+    executor:
+      docker:
+        - image: cimg/golang:<< pipeline.parameters.go_version >>
+      working_directory: << pipeline.parameters.working_directory >>
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v7-{{ checksum "go.sum" }}-<< pipeline.parameters.go_version >>
+            - go-mod-v7-<< pipeline.parameters.go_version >>
+      - run:
+          name: Install Dependencies
+          command: go mod download
+      - run:
+          name: Run Tests (Go << pipeline.parameters.go_version >>)
+          command: |
+            mkdir -p /tmp/test-reports
+            gotestsum --junitfile /tmp/test-reports/unit-tests-<< pipeline.parameters.go_version >>.xml --format testname
+      - store_test_results:
+          path: /tmp/test-reports
+      - store_artifacts:
+          path: /tmp/test-reports
+          destination: test-results-<< pipeline.parameters.go_version >>
+      - save_cache:
+          key: go-mod-v7-{{ checksum "go.sum" }}-<< pipeline.parameters.go_version >>
           paths:
             - "/go/pkg/mod"
 
@@ -145,11 +178,19 @@ jobs:
 workflows:
   ci-pipeline:
     jobs:
-      # Parallel execution for fast feedback
+      # Fast feedback jobs - run in parallel
       - test
       - lint
       - security
+      
+      # Coverage can run in parallel with other jobs
       - coverage
+      
+      # Matrix testing for Go version compatibility
+      - test-matrix:
+          matrix:
+            parameters:
+              go_version: ["1.23", "1.24.5"]
       
       # Build only after all checks pass
       - build:
@@ -158,8 +199,9 @@ workflows:
             - lint
             - security
             - coverage
+            - test-matrix
   
-  # Optional: Separate workflow for PR validation
+  # Lightweight PR validation workflow
   pr-validation:
     jobs:
       - test:
@@ -174,3 +216,23 @@ workflows:
           filters:
             branches:
               ignore: main
+      - test-matrix:
+          matrix:
+            parameters:
+              go_version: ["1.24.5"]
+          filters:
+            branches:
+              ignore: main
+  
+  # Nightly comprehensive testing
+  nightly:
+    triggers:
+      - schedule:
+          cron: "0 2 * * *"  # Run at 2 AM UTC daily
+    jobs:
+      - test-matrix:
+          matrix:
+            parameters:
+              go_version: ["1.23", "1.24", "1.24.5"]
+      - security
+      - coverage
