@@ -6,22 +6,26 @@ parameters:
   go_version:
     type: string
     default: "1.24.5"
+  working_directory:
+    type: string
+    default: "~/sp_api"
+
+# Define common executor
+executors:
+  go-executor:
+    docker:
+      - image: cimg/golang:<< pipeline.parameters.go_version >>
+    working_directory: << pipeline.parameters.working_directory >>
 
 # Define reusable commands
 commands:
-  restore_cache:
+  setup_environment:
     steps:
+      - checkout
       - restore_cache:
           keys:
-            - go-mod-v5-{{ checksum "go.sum" }}
-            - go-mod-v5-
-  
-  save_cache:
-    steps:
-      - save_cache:
-          key: go-mod-v5-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
+            - go-mod-v6-{{ checksum "go.sum" }}
+            - go-mod-v6-
   
   install_dependencies:
     steps:
@@ -29,70 +33,136 @@ commands:
           name: Install Dependencies
           command: go mod download
   
+  save_cache:
+    steps:
+      - save_cache:
+          key: go-mod-v6-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
+  
   run_tests:
     steps:
       - run:
           name: Run Tests
           command: |
             mkdir -p /tmp/test-reports
-            gotestsum --junitfile /tmp/test-reports/unit-tests.xml
+            gotestsum --junitfile /tmp/test-reports/unit-tests.xml --format testname
+      - store_test_results:
+          path: /tmp/test-reports
+      - store_artifacts:
+          path: /tmp/test-reports
+          destination: test-results
   
   run_lint:
     steps:
       - run:
           name: Run Lint
           command: make lint
+      - run:
+          name: Run Lint Fix
+          command: make lint-fix
+          when: on_fail
   
-  store_test_results:
+  build_application:
     steps:
-      - store_test_results:
-          path: /tmp/test-reports
+      - run:
+          name: Build Application
+          command: go build -v -o sp_api
+      - run:
+          name: Test Binary
+          command: ./sp_api --help || true
+      - store_artifacts:
+          path: sp_api
+          destination: binary
+  
+  security_scan:
+    steps:
+      - run:
+          name: Security Scan
+          command: |
+            go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
+            gosec ./...
+  
+  code_coverage:
+    steps:
+      - run:
+          name: Generate Coverage
+          command: |
+            go test -coverprofile=coverage.out ./...
+            go tool cover -html=coverage.out -o coverage.html
+      - store_artifacts:
+          path: coverage.out
+          destination: coverage
+      - store_artifacts:
+          path: coverage.html
+          destination: coverage
 
 # Define jobs
 jobs:
   test:
-    docker:
-      - image: cimg/golang:<< pipeline.parameters.go_version >>
-    working_directory: ~/sp_api
+    executor: go-executor
     steps:
-      - checkout
-      - restore_cache
+      - setup_environment
       - install_dependencies
       - run_tests
-      - store_test_results
       - save_cache
   
   lint:
-    docker:
-      - image: cimg/golang:<< pipeline.parameters.go_version >>
-    working_directory: ~/sp_api
+    executor: go-executor
     steps:
-      - checkout
-      - restore_cache
+      - setup_environment
       - install_dependencies
       - run_lint
       - save_cache
   
   build:
-    docker:
-      - image: cimg/golang:<< pipeline.parameters.go_version >>
-    working_directory: ~/sp_api
+    executor: go-executor
     steps:
-      - checkout
-      - restore_cache
+      - setup_environment
       - install_dependencies
-      - run:
-          name: Build Application
-          command: go build -o sp_api
+      - build_application
+      - save_cache
+  
+  security:
+    executor: go-executor
+    steps:
+      - setup_environment
+      - install_dependencies
+      - security_scan
+      - save_cache
+  
+  coverage:
+    executor: go-executor
+    steps:
+      - setup_environment
+      - install_dependencies
+      - code_coverage
       - save_cache
 
 # Define workflows
 workflows:
-  test-and-build:
+  ci-pipeline:
     jobs:
+      # Parallel execution for fast feedback
       - test
       - lint
+      - security
+      - coverage
+      
+      # Build only after all checks pass
       - build:
           requires:
             - test
             - lint
+            - security
+            - coverage
+  
+  # Optional: Separate workflow for PR validation
+  pr-validation:
+    jobs:
+      - test
+      - lint
+      - security
+    filters:
+      branches:
+        ignore: main
