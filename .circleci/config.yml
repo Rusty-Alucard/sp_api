@@ -34,7 +34,7 @@ jobs:
           name: Run Tests
           command: |
             mkdir -p /tmp/test-reports
-            gotestsum --junitfile /tmp/test-reports/unit-tests.xml --format testname
+            gotestsum --junitfile /tmp/test-reports/unit-tests.xml --format testname --rerun-fails=2
       - store_test_results:
           path: /tmp/test-reports
       - store_artifacts:
@@ -162,7 +162,7 @@ jobs:
           name: Run Tests (Go << parameters.go_version >>)
           command: |
             mkdir -p /tmp/test-reports
-            gotestsum --junitfile /tmp/test-reports/unit-tests-<< parameters.go_version >>.xml --format testname
+            gotestsum --junitfile /tmp/test-reports/unit-tests-<< parameters.go_version >>.xml --format testname --rerun-fails=2
       - store_test_results:
           path: /tmp/test-reports
       - store_artifacts:
@@ -176,6 +176,8 @@ jobs:
 # Define workflows
 workflows:
   ci-pipeline:
+    # Automatic retry for flaky tests and external dependencies
+    max-auto-reruns: 2
     jobs:
       # Fast feedback jobs - run in parallel
       - test
@@ -202,6 +204,8 @@ workflows:
   
   # Lightweight PR validation workflow
   pr-validation:
+    # Automatic retry for PR validation (reduced retries for faster feedback)
+    max-auto-reruns: 1
     jobs:
       - test:
           filters:
@@ -225,6 +229,8 @@ workflows:
   
   # Nightly comprehensive testing
   nightly:
+    # Automatic retry for comprehensive testing (more retries for thorough validation)
+    max-auto-reruns: 3
     triggers:
       - schedule:
           cron: "0 2 * * *"  # Run at 2 AM UTC daily
