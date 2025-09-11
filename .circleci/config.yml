@@ -5,7 +5,7 @@ version: 2.1
 parameters:
   go_version:
     type: string
-    default: "1.24.5"
+    default: "1.25.1"
   working_directory:
     type: string
     default: "~/sp_api"
@@ -14,7 +14,7 @@ parameters:
 executors:
   go-executor:
     docker:
-      - image: cimg/golang:<< pipeline.parameters.go_version >>
+      - image: cimg/go:<< pipeline.parameters.go_version >>
     working_directory: << pipeline.parameters.working_directory >>
 
 # Define jobs
@@ -147,7 +147,7 @@ jobs:
       go_version:
         type: string
     docker:
-      - image: cimg/golang:<< parameters.go_version >>
+      - image: cimg/go:<< parameters.go_version >>
     working_directory: << pipeline.parameters.working_directory >>
     steps:
       - checkout
@@ -189,7 +189,7 @@ workflows:
       - test-matrix:
           matrix:
             parameters:
-              go_version: ["1.23", "1.24.5"]
+              go_version: ["1.24", "1.25.1"]
       
       # Build only after all checks pass
       - build:
@@ -218,7 +218,7 @@ workflows:
       - test-matrix:
           matrix:
             parameters:
-              go_version: ["1.24.5"]
+              go_version: ["1.25.1"]
           filters:
             branches:
               ignore: main
@@ -235,6 +235,6 @@ workflows:
       - test-matrix:
           matrix:
             parameters:
-              go_version: ["1.23", "1.24", "1.24.5"]
+              go_version: ["1.24", "1.25.1"]
       - security
       - coverage
