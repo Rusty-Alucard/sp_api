@@ -17,31 +17,19 @@ executors:
       - image: cimg/golang:<< pipeline.parameters.go_version >>
     working_directory: << pipeline.parameters.working_directory >>
 
-# Define reusable commands
-commands:
-  setup_environment:
+# Define jobs
+jobs:
+  test:
+    executor: go-executor
     steps:
       - checkout
       - restore_cache:
           keys:
             - go-mod-v6-{{ checksum "go.sum" }}
             - go-mod-v6-
-  
-  install_dependencies:
-    steps:
       - run:
           name: Install Dependencies
           command: go mod download
-  
-  save_cache:
-    steps:
-      - save_cache:
-          key: go-mod-v6-{{ checksum "go.sum" }}
-          paths:
-            - "/go/pkg/mod"
-  
-  run_tests:
-    steps:
       - run:
           name: Run Tests
           command: |
@@ -52,9 +40,22 @@ commands:
       - store_artifacts:
           path: /tmp/test-reports
           destination: test-results
+      - save_cache:
+          key: go-mod-v6-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
   
-  run_lint:
+  lint:
+    executor: go-executor
     steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v6-{{ checksum "go.sum" }}
+            - go-mod-v6-
+      - run:
+          name: Install Dependencies
+          command: go mod download
       - run:
           name: Run Lint
           command: make lint
@@ -62,9 +63,22 @@ commands:
           name: Run Lint Fix
           command: make lint-fix
           when: on_fail
+      - save_cache:
+          key: go-mod-v6-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
   
-  build_application:
+  build:
+    executor: go-executor
     steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v6-{{ checksum "go.sum" }}
+            - go-mod-v6-
+      - run:
+          name: Install Dependencies
+          command: go mod download
       - run:
           name: Build Application
           command: go build -v -o sp_api
@@ -74,17 +88,43 @@ commands:
       - store_artifacts:
           path: sp_api
           destination: binary
+      - save_cache:
+          key: go-mod-v6-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
   
-  security_scan:
+  security:
+    executor: go-executor
     steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v6-{{ checksum "go.sum" }}
+            - go-mod-v6-
+      - run:
+          name: Install Dependencies
+          command: go mod download
       - run:
           name: Security Scan
           command: |
             go install github.com/securecodewarrior/gosec/v2/cmd/gosec@latest
             gosec ./...
+      - save_cache:
+          key: go-mod-v6-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
   
-  code_coverage:
+  coverage:
+    executor: go-executor
     steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v6-{{ checksum "go.sum" }}
+            - go-mod-v6-
+      - run:
+          name: Install Dependencies
+          command: go mod download
       - run:
           name: Generate Coverage
           command: |
@@ -96,48 +136,10 @@ commands:
       - store_artifacts:
           path: coverage.html
           destination: coverage
-
-# Define jobs
-jobs:
-  test:
-    executor: go-executor
-    steps:
-      - setup_environment
-      - install_dependencies
-      - run_tests
-      - save_cache
-  
-  lint:
-    executor: go-executor
-    steps:
-      - setup_environment
-      - install_dependencies
-      - run_lint
-      - save_cache
-  
-  build:
-    executor: go-executor
-    steps:
-      - setup_environment
-      - install_dependencies
-      - build_application
-      - save_cache
-  
-  security:
-    executor: go-executor
-    steps:
-      - setup_environment
-      - install_dependencies
-      - security_scan
-      - save_cache
-  
-  coverage:
-    executor: go-executor
-    steps:
-      - setup_environment
-      - install_dependencies
-      - code_coverage
-      - save_cache
+      - save_cache:
+          key: go-mod-v6-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
 
 # Define workflows
 workflows:
