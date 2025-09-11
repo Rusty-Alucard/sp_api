@@ -146,10 +146,9 @@ jobs:
     parameters:
       go_version:
         type: string
-    executor:
-      docker:
-        - image: cimg/golang:<< parameters.go_version >>
-      working_directory: << pipeline.parameters.working_directory >>
+    docker:
+      - image: cimg/golang:<< parameters.go_version >>
+    working_directory: << pipeline.parameters.working_directory >>
     steps:
       - checkout
       - restore_cache:
