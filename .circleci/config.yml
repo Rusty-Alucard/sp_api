@@ -189,7 +189,7 @@ workflows:
       - test-matrix:
           matrix:
             parameters:
-              go_version: ["1.24", "1.25.1"]
+              go_version: ["1.24.7", "1.25.1"]
       
       # Build only after all checks pass
       - build:
@@ -218,7 +218,7 @@ workflows:
       - test-matrix:
           matrix:
             parameters:
-              go_version: ["1.25.1"]
+              go_version: ["1.24.7", "1.25.1"]
           filters:
             branches:
               ignore: main
@@ -235,6 +235,6 @@ workflows:
       - test-matrix:
           matrix:
             parameters:
-              go_version: ["1.24", "1.25.1"]
+              go_version: ["1.24.7", "1.25.1"]
       - security
       - coverage
