@@ -148,29 +148,29 @@ jobs:
         type: string
     executor:
       docker:
-        - image: cimg/golang:<< pipeline.parameters.go_version >>
+        - image: cimg/golang:<< parameters.go_version >>
       working_directory: << pipeline.parameters.working_directory >>
     steps:
       - checkout
       - restore_cache:
           keys:
-            - go-mod-v7-{{ checksum "go.sum" }}-<< pipeline.parameters.go_version >>
-            - go-mod-v7-<< pipeline.parameters.go_version >>
+            - go-mod-v7-{{ checksum "go.sum" }}-<< parameters.go_version >>
+            - go-mod-v7-<< parameters.go_version >>
       - run:
           name: Install Dependencies
           command: go mod download
       - run:
-          name: Run Tests (Go << pipeline.parameters.go_version >>)
+          name: Run Tests (Go << parameters.go_version >>)
           command: |
             mkdir -p /tmp/test-reports
-            gotestsum --junitfile /tmp/test-reports/unit-tests-<< pipeline.parameters.go_version >>.xml --format testname
+            gotestsum --junitfile /tmp/test-reports/unit-tests-<< parameters.go_version >>.xml --format testname
       - store_test_results:
           path: /tmp/test-reports
       - store_artifacts:
           path: /tmp/test-reports
-          destination: test-results-<< pipeline.parameters.go_version >>
+          destination: test-results-<< parameters.go_version >>
       - save_cache:
-          key: go-mod-v7-{{ checksum "go.sum" }}-<< pipeline.parameters.go_version >>
+          key: go-mod-v7-{{ checksum "go.sum" }}-<< parameters.go_version >>
           paths:
             - "/go/pkg/mod"
 
