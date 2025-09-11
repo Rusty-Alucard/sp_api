@@ -1,3 +1,4 @@
+// Package config provides configuration management for the application.
 package config
 
 import (
@@ -8,7 +9,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-// マッピング用の構造体
+// Config represents the application configuration structure.
 type Config struct {
 	Database struct {
 		Driver   string
@@ -22,6 +23,7 @@ type Config struct {
 
 var cfg *Config
 
+// Init initializes the configuration with the specified environment.
 func Init(env string) error {
 	viper.SetConfigType("yml")
 	viper.SetConfigName(env)
@@ -33,12 +35,12 @@ func Init(env string) error {
 
 	// 読み取り
 	if err := viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("config file read error : %s \n", err)
+		return fmt.Errorf("config file read error: %s", err)
 	}
 
 	// 構造体にマッピング
 	if err := viper.Unmarshal(&cfg); err != nil {
-		return fmt.Errorf("unmarshal error : %s \n", err)
+		return fmt.Errorf("unmarshal error: %s", err)
 	}
 
 	// 更新検知と再読み込み
@@ -50,6 +52,7 @@ func Init(env string) error {
 	return nil
 }
 
+// GetConfig returns the current configuration instance.
 func GetConfig() *Config {
 	return cfg
 }

@@ -1,3 +1,4 @@
+// Package model provides domain models and value objects for the application.
 package model
 
 import (

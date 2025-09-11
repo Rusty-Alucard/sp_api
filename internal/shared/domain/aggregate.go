@@ -1,3 +1,4 @@
+// Package domain provides domain-driven design base implementations.
 package domain
 
 import (
