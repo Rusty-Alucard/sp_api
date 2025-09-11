@@ -162,9 +162,15 @@ workflows:
   # Optional: Separate workflow for PR validation
   pr-validation:
     jobs:
-      - test
-      - lint
-      - security
-    filters:
-      branches:
-        ignore: main
+      - test:
+          filters:
+            branches:
+              ignore: main
+      - lint:
+          filters:
+            branches:
+              ignore: main
+      - security:
+          filters:
+            branches:
+              ignore: main
