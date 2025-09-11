@@ -176,8 +176,6 @@ jobs:
 # Define workflows
 workflows:
   ci-pipeline:
-    # Automatic retry for flaky tests and external dependencies
-    max-auto-reruns: 2
     jobs:
       # Fast feedback jobs - run in parallel
       - test
@@ -204,8 +202,6 @@ workflows:
   
   # Lightweight PR validation workflow
   pr-validation:
-    # Automatic retry for PR validation (reduced retries for faster feedback)
-    max-auto-reruns: 1
     jobs:
       - test:
           filters:
@@ -229,11 +225,12 @@ workflows:
   
   # Nightly comprehensive testing
   nightly:
-    # Automatic retry for comprehensive testing (more retries for thorough validation)
-    max-auto-reruns: 3
     triggers:
       - schedule:
           cron: "0 2 * * *"  # Run at 2 AM UTC daily
+          filters:
+            branches:
+              only: main
     jobs:
       - test-matrix:
           matrix:
