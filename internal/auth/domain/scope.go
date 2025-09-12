@@ -20,6 +20,16 @@ const (
 	ReadOnlyRequestsPerHour     = 10
 	ReadOnlyRequestsPerDay      = 100
 	HoursPerDay                 = 24
+	// Complexity limits
+	FreeComplexityLimit         = 50
+	StandardComplexityLimit     = 200
+	PremiumComplexityLimit      = 1000
+	EnterpriseComplexityLimit   = 5000
+	DefaultComplexityLimit      = 10
+	// Default rate limits
+	DefaultRequestsPerMinute    = 1
+	DefaultRequestsPerHour      = 10
+	DefaultRequestsPerDay       = 100
 )
 
 // Scope represents a permission scope for API access.
@@ -136,9 +146,9 @@ func (p Plan) GetRateLimit() RateLimit {
 		}
 	default:
 		return RateLimit{
-			RequestsPerMinute: 1,
-			RequestsPerHour:   10,
-			RequestsPerDay:    100,
+			RequestsPerMinute: DefaultRequestsPerMinute,
+			RequestsPerHour:   DefaultRequestsPerHour,
+			RequestsPerDay:    DefaultRequestsPerDay,
 		}
 	}
 }
@@ -147,15 +157,15 @@ func (p Plan) GetRateLimit() RateLimit {
 func (p Plan) GetComplexityLimit() int {
 	switch p {
 	case PlanFree:
-		return 50
+		return FreeComplexityLimit
 	case PlanStandard:
-		return 200
+		return StandardComplexityLimit
 	case PlanPremium:
-		return 1000
+		return PremiumComplexityLimit
 	case PlanEnterprise:
-		return 5000
+		return EnterpriseComplexityLimit
 	default:
-		return 10
+		return DefaultComplexityLimit
 	}
 }
 
