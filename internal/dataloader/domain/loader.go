@@ -6,6 +6,15 @@ import (
 	"time"
 )
 
+const (
+	// DefaultMaxBatch is the default maximum batch size
+	DefaultMaxBatch = 100
+	// DefaultWait is the default wait time for batching
+	DefaultWait = 4 * time.Millisecond
+	// DefaultCacheExpiry is the default cache expiry time
+	DefaultCacheExpiry = 5 * time.Minute
+)
+
 // Loader defines the interface for DataLoader operations.
 type Loader[K comparable, V any] interface {
 	Load(ctx context.Context, key K) (V, error)
@@ -29,10 +38,10 @@ type Config struct {
 // DefaultConfig returns the default DataLoader configuration.
 func DefaultConfig() Config {
 	return Config{
-		MaxBatch:    100,
-		Wait:        4 * time.Millisecond,
+		MaxBatch:    DefaultMaxBatch,
+		Wait:        DefaultWait,
 		Cache:       true,
-		CacheExpiry: 5 * time.Minute,
+		CacheExpiry: DefaultCacheExpiry,
 	}
 }
 

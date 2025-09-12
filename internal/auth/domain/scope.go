@@ -187,7 +187,7 @@ func (r RateLimit) GetWindows() []Window {
 	return []Window{
 		{Duration: time.Minute, Limit: r.RequestsPerMinute},
 		{Duration: time.Hour, Limit: r.RequestsPerHour},
-		{Duration: 24 * time.Hour, Limit: r.RequestsPerDay},
+		{Duration: HoursPerDay * time.Hour, Limit: r.RequestsPerDay},
 	}
 }
 

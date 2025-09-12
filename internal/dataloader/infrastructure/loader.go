@@ -39,10 +39,10 @@ func NewLoader[K comparable, V any](
 		config.MaxBatch = 100
 	}
 	if config.Wait == 0 {
-		config.Wait = 4 * time.Millisecond
+		config.Wait = dataloader.DefaultWait
 	}
 	if config.CacheExpiry == 0 {
-		config.CacheExpiry = 5 * time.Minute
+		config.CacheExpiry = dataloader.DefaultCacheExpiry
 	}
 
 	l := &loader[K, V]{
