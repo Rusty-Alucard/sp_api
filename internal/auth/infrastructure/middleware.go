@@ -136,7 +136,7 @@ func (m *AuthMiddleware) extractBearerToken(r *http.Request) string {
 		return ""
 	}
 
-	parts := strings.SplitN(authHeader, " ", 2)
+	parts := strings.SplitN(authHeader, " ", 2) // Split into 2 parts: "Bearer" and token
 	if len(parts) != 2 || strings.ToLower(parts[0]) != "bearer" {
 		return ""
 	}

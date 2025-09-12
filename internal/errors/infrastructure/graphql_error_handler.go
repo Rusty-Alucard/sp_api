@@ -14,6 +14,13 @@ import (
 	errors "github.com/Rusty-Alucard/sp_api/internal/errors/domain"
 )
 
+const (
+	// RetryAfterTimeout represents retry after timeout duration
+	RetryAfterTimeout = 30 * time.Second
+	// RetryAfterConnectionRefused represents retry after connection refused duration
+	RetryAfterConnectionRefused = 60 * time.Second
+)
+
 // GraphQLErrorHandler handles GraphQL errors for AI agents.
 type GraphQLErrorHandler struct {
 	logger Logger
@@ -66,11 +73,11 @@ func (h *GraphQLErrorHandler) convertToStructuredError(err error, requestID stri
 	case "context deadline exceeded":
 		return errors.NewStructuredError(errors.ErrorCodeServiceUnavailable, "Request timeout").
 			WithRequestID(requestID).
-			WithRetryAfter(30 * time.Second)
+			WithRetryAfter(RetryAfterTimeout)
 	case "connection refused":
 		return errors.NewStructuredError(errors.ErrorCodeServiceUnavailable, "Service temporarily unavailable").
 			WithRequestID(requestID).
-			WithRetryAfter(60 * time.Second)
+			WithRetryAfter(RetryAfterConnectionRefused)
 	default:
 		// Default to internal server error
 		return errors.NewStructuredError(errors.ErrorCodeInternalServerError, err.Error()).
