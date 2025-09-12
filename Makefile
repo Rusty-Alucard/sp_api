@@ -49,3 +49,9 @@ test-coverage:
 
 server:
 	go run server.go wire_gen.go
+
+validate-ci:
+	circleci config validate
+
+validate-all: validate-ci lint
+	@echo "All validations passed!"
