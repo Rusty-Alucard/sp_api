@@ -1,0 +1,91 @@
+version: 2
+
+run:
+  timeout: 5m
+  modules-download-mode: readonly
+
+linters-settings:
+  gocyclo:
+    min-complexity: 15
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - experimental
+      - opinionated
+      - performance
+      - style
+  goimports:
+    local-prefixes: github.com/Rusty-Alucard/sp_api
+  misspell:
+    locale: US
+  nolintlint:
+    allow-leading-space: true
+    allow-unused: false
+    require-explanation: false
+    require-specific: false
+
+linters:
+  enable:
+    - bodyclose
+    - copyloopvar
+    - dogsled
+    - dupl
+    - errcheck
+    - exhaustive
+    - funlen
+    - gochecknoinits
+    - goconst
+    - gocritic
+    - gocyclo
+    - mnd
+    - goprintffuncname
+    - gosec
+    - govet
+    - ineffassign
+    - lll
+    - misspell
+    - nakedret
+    - noctx
+    - nolintlint
+    - revive
+    - rowserrcheck
+    - staticcheck
+    - unconvert
+    - unparam
+    - unused
+    - whitespace
+
+  disable:
+    - prealloc
+
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - mnd
+        - funlen
+        - gocyclo
+        - lll
+    - path: graph/generated/
+      linters:
+        - revive
+        - gocyclo
+        - funlen
+    - path: domain/model/models_gen.go
+      linters:
+        - revive
+        - gocyclo
+        - funlen
+    - path: ".*"
+      linters:
+        - dupl
+        - errcheck
+        - stylecheck
+        - whitespace
+
+  exclude-use-default: false
+  max-issues-per-linter: 0
+  max-same-issues: 0

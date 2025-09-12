@@ -1,0 +1,1 @@
+Go 1.25.1とGo 1.24.5のツールチェーンのバージョン不一致問題が継続している。goenv global 1.24.5に戻してgolangci-lintを実行し、その後Go 1.25.1に戻すアプローチを何度も試したが解決していない。go clean -cache -modcache -testcacheやgoenv rehash、source ~/.zshrcも試したが効果なし。GOROOTは1.25.1を指しているが、コンパイル時にgo1.24.5のツールチェーンが使用される問題が続いている。

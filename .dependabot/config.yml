@@ -1,0 +1,12 @@
+version: 2
+updates:
+  - package-ecosystem: "gomod"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "develop"
+    allow:
+      - dependency-type: "direct"
+    labels:
+      - "dependencies"
+    open-pull-requests-limit: 99
