@@ -48,6 +48,10 @@ pre-commit install
 echo "🔍 Validating CircleCI configuration..."
 make validate-ci
 
+# Install tools first
+echo "🔧 Installing development tools..."
+make install-tools
+
 # Run initial lint check
 echo "🔍 Running initial lint check..."
 make lint

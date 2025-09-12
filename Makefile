@@ -13,7 +13,8 @@ install-tools:
 		github.com/99designs/gqlgen \
 		golang.org/x/tools/cmd/goimports \
 		honnef.co/go/tools/cmd/staticcheck
-	go build -o bin/golangci-lint github.com/golangci/golangci-lint/v2/cmd/golangci-lint
+	# Use installation script for golangci-lint to avoid toolchain issues
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b ./bin v1.61.0
 
 install-all: install-go install-go-modules install-tools
 
