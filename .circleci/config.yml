@@ -44,34 +44,34 @@ jobs:
           key: go-mod-v7-{{ checksum "go.sum" }}
           paths:
             - "/go/pkg/mod"
-  
-         lint:
-           executor: go-executor
-           steps:
-             - checkout
-             - restore_cache:
-                 keys:
-                   - go-mod-v7-{{ checksum "go.sum" }}
-                   - go-mod-v7-
-             - run:
-                 name: Install Dependencies
-                 command: go mod download
-             - run:
-                 name: Install golangci-lint
-                 command: |
-                   mkdir -p bin
-                   go build -o bin/golangci-lint github.com/golangci/golangci-lint/v2/cmd/golangci-lint
-             - run:
-                 name: Run Lint
-                 command: ./bin/golangci-lint run
-             - run:
-                 name: Run Lint Fix
-                 command: ./bin/golangci-lint run --fix
-                 when: on_fail
-             - save_cache:
-                 key: go-mod-v7-{{ checksum "go.sum" }}
-                 paths:
-                   - "/go/pkg/mod"
+
+  lint:
+    executor: go-executor
+    steps:
+      - checkout
+      - restore_cache:
+          keys:
+            - go-mod-v7-{{ checksum "go.sum" }}
+            - go-mod-v7-
+      - run:
+          name: Install Dependencies
+          command: go mod download
+      - run:
+          name: Install golangci-lint
+          command: |
+            mkdir -p bin
+            go build -o bin/golangci-lint github.com/golangci/golangci-lint/v2/cmd/golangci-lint
+      - run:
+          name: Run Lint
+          command: ./bin/golangci-lint run
+      - run:
+          name: Run Lint Fix
+          command: ./bin/golangci-lint run --fix
+          when: on_fail
+      - save_cache:
+          key: go-mod-v7-{{ checksum "go.sum" }}
+          paths:
+            - "/go/pkg/mod"
   
   build:
     executor: go-executor
