@@ -31,7 +31,10 @@ type result[V any] struct {
 }
 
 // NewLoader creates a new DataLoader.
-func NewLoader[K comparable, V any](batchFunc dataloader.BatchFunc[K, V], config dataloader.Config) dataloader.Loader[K, V] {
+func NewLoader[K comparable, V any](
+	batchFunc dataloader.BatchFunc[K, V],
+	config dataloader.Config,
+) dataloader.Loader[K, V] {
 	if config.MaxBatch == 0 {
 		config.MaxBatch = 100
 	}

@@ -231,11 +231,7 @@ func TestAuthService_RefreshToken(t *testing.T) {
 	require.NoError(t, err)
 	assert.NotEmpty(t, newToken)
 	// JWT tokens are time-dependent, so we just check they're different strings
-	if originalToken != newToken {
-		// Tokens are different, which is expected
-	} else {
-		// If they're the same, it might be due to timing, which is acceptable
-	}
+	// Note: Tokens might be the same due to timing, which is acceptable
 
 	// 新しいトークンを検証
 	claims, err := service.ValidateToken(newToken)

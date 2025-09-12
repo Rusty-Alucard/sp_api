@@ -58,7 +58,11 @@ func (r *RedisRateLimiter) GetRemaining(ctx context.Context, key string, limit r
 }
 
 // GetResetTime returns the reset time for the most restrictive window.
-func (r *RedisRateLimiter) GetResetTime(ctx context.Context, key string, limit ratelimitdomain.RateLimit) (time.Time, error) {
+func (r *RedisRateLimiter) GetResetTime(
+	ctx context.Context,
+	key string,
+	limit ratelimitdomain.RateLimit,
+) (time.Time, error) {
 	windows := limit.GetWindows()
 	earliestReset := time.Now().Add(ratelimitdomain.HoursPerDay * time.Hour) // Start with the longest window
 
@@ -99,7 +103,11 @@ func (r *RedisRateLimiter) checkWindow(ctx context.Context, key string, window r
 }
 
 // getWindowRemaining returns the remaining requests for a specific window.
-func (r *RedisRateLimiter) getWindowRemaining(ctx context.Context, key string, window ratelimitdomain.Window) (int, error) {
+func (r *RedisRateLimiter) getWindowRemaining(
+	ctx context.Context,
+	key string,
+	window ratelimitdomain.Window,
+) (int, error) {
 	windowKey := r.getWindowKey(key, window.Duration)
 
 	count, err := r.client.Get(ctx, windowKey).Int()
@@ -120,7 +128,11 @@ func (r *RedisRateLimiter) getWindowRemaining(ctx context.Context, key string, w
 }
 
 // getWindowResetTime returns the reset time for a specific window.
-func (r *RedisRateLimiter) getWindowResetTime(ctx context.Context, key string, window ratelimitdomain.Window) (time.Time, error) {
+func (r *RedisRateLimiter) getWindowResetTime(
+	ctx context.Context,
+	key string,
+	window ratelimitdomain.Window,
+) (time.Time, error) {
 	windowKey := r.getWindowKey(key, window.Duration)
 
 	ttl, err := r.client.TTL(ctx, windowKey).Result()

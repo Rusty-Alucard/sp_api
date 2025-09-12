@@ -9,6 +9,11 @@ import (
 	"time"
 )
 
+const (
+	// HoursPerDay represents the number of hours in a day.
+	HoursPerDay = 24
+)
+
 // APQCache defines the interface for APQ cache operations.
 type APQCache interface {
 	Get(ctx context.Context, hash string) (string, bool, error)
@@ -26,7 +31,7 @@ type APQManager struct {
 // NewAPQManager creates a new APQManager.
 func NewAPQManager(cache APQCache, ttl time.Duration) *APQManager {
 	if ttl == 0 {
-		ttl = 24 * time.Hour // Default TTL
+		ttl = HoursPerDay * time.Hour // Default TTL
 	}
 
 	return &APQManager{

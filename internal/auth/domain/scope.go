@@ -3,6 +3,25 @@ package auth
 
 import "time"
 
+// Rate limit constants
+const (
+	FreeRequestsPerMinute    = 10
+	FreeRequestsPerHour      = 100
+	FreeRequestsPerDay       = 1000
+	StandardRequestsPerMinute = 50
+	StandardRequestsPerHour   = 1000
+	StandardRequestsPerDay    = 10000
+	PremiumRequestsPerMinute  = 200
+	PremiumRequestsPerHour    = 5000
+	PremiumRequestsPerDay     = 50000
+	EnterpriseRequestsPerMinute = 1000
+	EnterpriseRequestsPerHour   = 50000
+	EnterpriseRequestsPerDay    = 500000
+	ReadOnlyRequestsPerHour     = 10
+	ReadOnlyRequestsPerDay      = 100
+	HoursPerDay                 = 24
+)
+
 // Scope represents a permission scope for API access.
 type Scope string
 
@@ -93,9 +112,9 @@ func (p Plan) GetRateLimit() RateLimit {
 	switch p {
 	case PlanFree:
 		return RateLimit{
-			RequestsPerMinute: 10,
-			RequestsPerHour:   100,
-			RequestsPerDay:    1000,
+			RequestsPerMinute: FreeRequestsPerMinute,
+			RequestsPerHour:   FreeRequestsPerHour,
+			RequestsPerDay:    FreeRequestsPerDay,
 		}
 	case PlanStandard:
 		return RateLimit{

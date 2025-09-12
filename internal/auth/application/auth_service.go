@@ -55,6 +55,7 @@ func (s *AuthService) AuthenticateAgent(ctx context.Context, clientID, clientSec
 	if err := s.agentRepo.Save(ctx, agent); err != nil {
 		// Log error but don't fail authentication
 		// TODO: Add proper logging
+		_ = err // Explicitly ignore error for now
 	}
 
 	return agent, nil
