@@ -14,7 +14,7 @@ install-tools:
 		golang.org/x/tools/cmd/goimports \
 		honnef.co/go/tools/cmd/staticcheck
 	# Use installation script for golangci-lint to avoid toolchain issues
-	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b ./bin v1.61.0
+	curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b ./bin v2.4.0
 
 install-all: install-go install-go-modules install-tools
 
