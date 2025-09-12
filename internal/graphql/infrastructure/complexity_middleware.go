@@ -14,6 +14,17 @@ import (
 	graphqldomain "github.com/Rusty-Alucard/sp_api/internal/graphql/domain"
 )
 
+const (
+	// Complexity constants for different field types
+	BaseComplexityLow    = 5
+	BaseComplexityMedium = 10
+	DefaultComplexity    = 50
+	StandardComplexity   = 200
+	HighComplexity       = 1000
+	MaxComplexity        = 5000
+	MinComplexity        = 10
+)
+
 // ComplexityMiddleware provides GraphQL query complexity limiting.
 type ComplexityMiddleware struct {
 	analyzer *graphqldomain.QueryAnalyzer
@@ -25,30 +36,30 @@ func NewComplexityMiddleware() *ComplexityMiddleware {
 
 	// Add complexity rules for common fields
 	analyzer.AddComplexityRule("Query.events", graphqldomain.ComplexityRule{
-		BaseComplexity: 5,
+		BaseComplexity: BaseComplexityLow,
 		Multiplier:     "limit",
 	})
 
 	analyzer.AddComplexityRule("Query.teams", graphqldomain.ComplexityRule{
-		BaseComplexity: 5,
+		BaseComplexity: BaseComplexityLow,
 		Multiplier:     "limit",
 	})
 
 	analyzer.AddComplexityRule("Event.participants", graphqldomain.ComplexityRule{
-		BaseComplexity: 10,
+		BaseComplexity: BaseComplexityMedium,
 	})
 
 	analyzer.AddComplexityRule("Event.matches", graphqldomain.ComplexityRule{
-		BaseComplexity: 10,
+		BaseComplexity: BaseComplexityMedium,
 		Multiplier:     "limit",
 	})
 
 	analyzer.AddComplexityRule("Team.members", graphqldomain.ComplexityRule{
-		BaseComplexity: 5,
+		BaseComplexity: BaseComplexityLow,
 	})
 
 	analyzer.AddComplexityRule("Match.timelines", graphqldomain.ComplexityRule{
-		BaseComplexity: 5,
+		BaseComplexity: BaseComplexityLow,
 		Multiplier:     "limit",
 	})
 
@@ -64,7 +75,7 @@ func (m *ComplexityMiddleware) ComplexityLimitFunc() func(ctx context.Context, q
 		claims, ok := authinfra.GetAgentClaimsFromContext(ctx)
 		if !ok {
 			// No authentication, use default limit
-			return 50, nil
+			return DefaultComplexity, nil
 		}
 
 		// Get complexity limit based on agent's plan
@@ -105,15 +116,15 @@ func (m *ComplexityMiddleware) ComplexityLimitFunc() func(ctx context.Context, q
 func (m *ComplexityMiddleware) getComplexityLimit(claims *authapp.AgentClaims) int {
 	switch claims.Plan {
 	case "free":
-		return 50
+		return DefaultComplexity
 	case "standard":
-		return 200
+		return StandardComplexity
 	case "premium":
-		return 1000
+		return HighComplexity
 	case "enterprise":
-		return 5000
+		return DefaultComplexity00
 	default:
-		return 10
+		return MinComplexity
 	}
 }
 
@@ -125,7 +136,7 @@ func (m *ComplexityMiddleware) getVariablesFromContext(ctx context.Context) map[
 	}
 
 	// Try to get variables from HTTP request context
-	if req := graphql.GetRequestContext(ctx); req != nil {
+	if req := graphql.GetOperationContext(ctx); req != nil {
 		if req.Variables != nil {
 			return req.Variables
 		}
@@ -145,30 +156,30 @@ func NewHTTPComplexityMiddleware() *HTTPComplexityMiddleware {
 
 	// Add the same complexity rules as the GraphQL middleware
 	analyzer.AddComplexityRule("Query.events", graphqldomain.ComplexityRule{
-		BaseComplexity: 5,
+		BaseComplexity: BaseComplexityLow,
 		Multiplier:     "limit",
 	})
 
 	analyzer.AddComplexityRule("Query.teams", graphqldomain.ComplexityRule{
-		BaseComplexity: 5,
+		BaseComplexity: BaseComplexityLow,
 		Multiplier:     "limit",
 	})
 
 	analyzer.AddComplexityRule("Event.participants", graphqldomain.ComplexityRule{
-		BaseComplexity: 10,
+		BaseComplexity: BaseComplexityMedium,
 	})
 
 	analyzer.AddComplexityRule("Event.matches", graphqldomain.ComplexityRule{
-		BaseComplexity: 10,
+		BaseComplexity: BaseComplexityMedium,
 		Multiplier:     "limit",
 	})
 
 	analyzer.AddComplexityRule("Team.members", graphqldomain.ComplexityRule{
-		BaseComplexity: 5,
+		BaseComplexity: BaseComplexityLow,
 	})
 
 	analyzer.AddComplexityRule("Match.timelines", graphqldomain.ComplexityRule{
-		BaseComplexity: 5,
+		BaseComplexity: BaseComplexityLow,
 		Multiplier:     "limit",
 	})
 
@@ -247,14 +258,14 @@ func (m *HTTPComplexityMiddleware) Middleware() func(http.Handler) http.Handler 
 func (m *HTTPComplexityMiddleware) getComplexityLimit(claims *authapp.AgentClaims) int {
 	switch claims.Plan {
 	case "free":
-		return 50
+		return DefaultComplexity
 	case "standard":
-		return 200
+		return StandardComplexity
 	case "premium":
-		return 1000
+		return HighComplexity
 	case "enterprise":
-		return 5000
+		return DefaultComplexity00
 	default:
-		return 10
+		return MinComplexity
 	}
 }

@@ -10,6 +10,13 @@ import (
 	"github.com/redis/go-redis/v9"
 )
 
+const (
+	// Time constants for rate limiting windows
+	SecondsPerMinute = 60
+	SecondsPerHour   = 3600
+	SecondsPerDay    = 86400
+)
+
 // RedisRateLimiter implements rate limiting using Redis.
 type RedisRateLimiter struct {
 	client redis.UniversalClient
@@ -165,11 +172,11 @@ func (r *RedisRateLimiter) getWindowKey(key string, duration time.Duration) stri
 	case time.Nanosecond, time.Microsecond, time.Millisecond, time.Second:
 		return fmt.Sprintf("rate_limit:%s:custom:%d", key, now.Unix()/int64(duration.Seconds()))
 	case time.Minute:
-		return fmt.Sprintf("rate_limit:%s:minute:%d", key, now.Unix()/60)
+		return fmt.Sprintf("rate_limit:%s:minute:%d", key, now.Unix()/SecondsPerMinute)
 	case time.Hour:
-		return fmt.Sprintf("rate_limit:%s:hour:%d", key, now.Unix()/3600)
+		return fmt.Sprintf("rate_limit:%s:hour:%d", key, now.Unix()/SecondsPerHour)
 	case ratelimitdomain.HoursPerDay * time.Hour:
-		return fmt.Sprintf("rate_limit:%s:day:%d", key, now.Unix()/86400)
+		return fmt.Sprintf("rate_limit:%s:day:%d", key, now.Unix()/SecondsPerDay)
 	default:
 		return fmt.Sprintf("rate_limit:%s:custom:%d", key, now.Unix()/int64(duration.Seconds()))
 	}
