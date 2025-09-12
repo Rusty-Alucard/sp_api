@@ -234,7 +234,7 @@ func (m *HTTPComplexityMiddleware) Middleware() func(http.Handler) http.Handler 
 
 				w.Header().Set("Content-Type", "application/json")
 				w.WriteHeader(http.StatusBadRequest)
-				json.NewEncoder(w).Encode(response)
+				_ = json.NewEncoder(w).Encode(response)
 				return
 			}
 

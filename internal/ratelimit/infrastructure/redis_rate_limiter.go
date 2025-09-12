@@ -60,7 +60,7 @@ func (r *RedisRateLimiter) GetRemaining(ctx context.Context, key string, limit r
 // GetResetTime returns the reset time for the most restrictive window.
 func (r *RedisRateLimiter) GetResetTime(ctx context.Context, key string, limit ratelimitdomain.RateLimit) (time.Time, error) {
 	windows := limit.GetWindows()
-	earliestReset := time.Now().Add(24 * time.Hour) // Start with the longest window
+	earliestReset := time.Now().Add(ratelimitdomain.HoursPerDay * time.Hour) // Start with the longest window
 
 	for _, window := range windows {
 		resetTime, err := r.getWindowResetTime(ctx, key, window)
@@ -156,7 +156,7 @@ func (r *RedisRateLimiter) getWindowKey(key string, duration time.Duration) stri
 		return fmt.Sprintf("rate_limit:%s:minute:%d", key, now.Unix()/60)
 	case time.Hour:
 		return fmt.Sprintf("rate_limit:%s:hour:%d", key, now.Unix()/3600)
-	case 24 * time.Hour:
+	case ratelimitdomain.HoursPerDay * time.Hour:
 		return fmt.Sprintf("rate_limit:%s:day:%d", key, now.Unix()/86400)
 	default:
 		return fmt.Sprintf("rate_limit:%s:custom:%d", key, now.Unix()/int64(duration.Seconds()))

@@ -148,14 +148,14 @@ func (m *AuthMiddleware) extractBearerToken(r *http.Request) string {
 func (m *AuthMiddleware) writeUnauthorizedResponse(w http.ResponseWriter, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusUnauthorized)
-	w.Write([]byte(`{"error": "unauthorized", "message": "` + message + `"}`))
+	_, _ = w.Write([]byte(`{"error": "unauthorized", "message": "` + message + `"}`))
 }
 
 // writeForbiddenResponse writes a forbidden response.
 func (m *AuthMiddleware) writeForbiddenResponse(w http.ResponseWriter, message string) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusForbidden)
-	w.Write([]byte(`{"error": "forbidden", "message": "` + message + `"}`))
+	_, _ = w.Write([]byte(`{"error": "forbidden", "message": "` + message + `"}`))
 }
 
 // GetAgentClaimsFromContext extracts agent claims from the request context.
