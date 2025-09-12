@@ -1,9 +1,15 @@
+// Package ratelimit provides domain models and interfaces for rate limiting functionality.
 package ratelimit
 
 import (
 	"context"
 	"errors"
 	"time"
+)
+
+const (
+	// HoursPerDay represents the number of hours in a day.
+	HoursPerDay = 24
 )
 
 // RateLimit represents rate limiting configuration.
@@ -19,8 +25,8 @@ type Window struct {
 	Limit    int
 }
 
-// RateLimitError represents a rate limit exceeded error.
-type RateLimitError struct {
+// Error represents a rate limit exceeded error.
+type Error struct {
 	Message    string
 	RetryAfter time.Duration
 	Limit      int
@@ -29,7 +35,7 @@ type RateLimitError struct {
 }
 
 // Error implements the error interface.
-func (e *RateLimitError) Error() string {
+func (e *Error) Error() string {
 	return e.Message
 }
 
@@ -38,19 +44,19 @@ func (r RateLimit) GetWindows() []Window {
 	return []Window{
 		{Duration: time.Minute, Limit: r.RequestsPerMinute},
 		{Duration: time.Hour, Limit: r.RequestsPerHour},
-		{Duration: 24 * time.Hour, Limit: r.RequestsPerDay},
+		{Duration: HoursPerDay * time.Hour, Limit: r.RequestsPerDay},
 	}
 }
 
 // IsRateLimitExceeded checks if an error is a rate limit exceeded error.
 func IsRateLimitExceeded(err error) bool {
-	var rateLimitErr *RateLimitError
+	var rateLimitErr *Error
 	return errors.As(err, &rateLimitErr)
 }
 
 // NewRateLimitExceededError creates a new rate limit exceeded error.
-func NewRateLimitExceededError(retryAfter time.Duration, limit, remaining int, resetTime time.Time) *RateLimitError {
-	return &RateLimitError{
+func NewRateLimitExceededError(retryAfter time.Duration, limit, remaining int, resetTime time.Time) *Error {
+	return &Error{
 		Message:    "rate limit exceeded",
 		RetryAfter: retryAfter,
 		Limit:      limit,
