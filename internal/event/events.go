@@ -1,188 +1,130 @@
+// Package event provides domain events for the application.
 package event
 
-import (
-	"time"
+import "time"
 
-	"github.com/Rusty-Alucard/sp_api/internal/shared/domain"
-)
-
-// EventCreated represents an event creation domain event
-type EventCreated struct {
-	domain.BaseDomainEvent
+// Created represents an event creation domain event.
+type Created struct {
+	ID        string
+	EventName string
+	CreatedAt time.Time
 }
 
-// NewEventCreated creates a new event created domain event
-func NewEventCreated(eventID domain.AggregateID, name EventName, nameJP EventNameJP) EventCreated {
-	return EventCreated{
-		BaseDomainEvent: domain.NewBaseDomainEvent(
-			generateEventID(),
-			eventID,
-			"EventCreated",
-			map[string]interface{}{
-				"name":   name.Value(),
-				"nameJP": nameJP.Value(),
-			},
-		),
+// EventID returns the event ID.
+func (e Created) EventID() string {
+	return e.ID
+}
+
+// EventType returns the event type.
+func (e Created) EventType() string {
+	return "EventCreated"
+}
+
+// OccurredAt returns when the event occurred.
+func (e Created) OccurredAt() time.Time {
+	return e.CreatedAt
+}
+
+// EventData returns the event data.
+func (e Created) EventData() map[string]interface{} {
+	return map[string]interface{}{
+		"event_id":   e.ID,
+		"event_name": e.EventName,
+		"created_at": e.CreatedAt,
 	}
 }
 
-// EventStarted represents an event start domain event
-type EventStarted struct {
-	domain.BaseDomainEvent
+// Started represents an event start domain event.
+type Started struct {
+	ID        string
+	EventName string
+	StartedAt time.Time
 }
 
-// NewEventStarted creates a new event started domain event
-func NewEventStarted(eventID domain.AggregateID) EventStarted {
-	return EventStarted{
-		BaseDomainEvent: domain.NewBaseDomainEvent(
-			generateEventID(),
-			eventID,
-			"EventStarted",
-			map[string]interface{}{
-				"startedAt": time.Now(),
-			},
-		),
+// EventID returns the event ID.
+func (e Started) EventID() string {
+	return e.ID
+}
+
+// EventType returns the event type.
+func (e Started) EventType() string {
+	return "EventStarted"
+}
+
+// OccurredAt returns when the event occurred.
+func (e Started) OccurredAt() time.Time {
+	return e.StartedAt
+}
+
+// EventData returns the event data.
+func (e Started) EventData() map[string]interface{} {
+	return map[string]interface{}{
+		"event_id":   e.ID,
+		"event_name": e.EventName,
+		"started_at": e.StartedAt,
 	}
 }
 
-// EventCompleted represents an event completion domain event
-type EventCompleted struct {
-	domain.BaseDomainEvent
+// Completed represents an event completion domain event.
+type Completed struct {
+	ID          string
+	EventName   string
+	CompletedAt time.Time
 }
 
-// NewEventCompleted creates a new event completed domain event
-func NewEventCompleted(eventID domain.AggregateID) EventCompleted {
-	return EventCompleted{
-		BaseDomainEvent: domain.NewBaseDomainEvent(
-			generateEventID(),
-			eventID,
-			"EventCompleted",
-			map[string]interface{}{
-				"completedAt": time.Now(),
-			},
-		),
+// EventID returns the event ID.
+func (e Completed) EventID() string {
+	return e.ID
+}
+
+// EventType returns the event type.
+func (e Completed) EventType() string {
+	return "EventCompleted"
+}
+
+// OccurredAt returns when the event occurred.
+func (e Completed) OccurredAt() time.Time {
+	return e.CompletedAt
+}
+
+// EventData returns the event data.
+func (e Completed) EventData() map[string]interface{} {
+	return map[string]interface{}{
+		"event_id":     e.ID,
+		"event_name":   e.EventName,
+		"completed_at": e.CompletedAt,
 	}
 }
 
-// EventCancelled represents an event cancellation domain event
-type EventCancelled struct {
-	domain.BaseDomainEvent
-	reason string
+// Cancelled represents an event cancellation domain event.
+type Cancelled struct {
+	ID           string
+	EventName    string
+	CancelledAt  time.Time
+	Cancellation string
 }
 
-// NewEventCancelled creates a new event canceled domain event
-func NewEventCancelled(eventID domain.AggregateID, reason string) EventCancelled {
-	return EventCancelled{
-		BaseDomainEvent: domain.NewBaseDomainEvent(
-			generateEventID(),
-			eventID,
-			"EventCancelled",
-			map[string]interface{}{
-				"reason":      reason,
-				"cancelledAt": time.Now(),
-			},
-		),
-		reason: reason,
+// EventID returns the event ID.
+func (e Cancelled) EventID() string {
+	return e.ID
+}
+
+// EventType returns the event type.
+func (e Cancelled) EventType() string {
+	return "EventCancelled"
+}
+
+// OccurredAt returns when the event occurred.
+func (e Cancelled) OccurredAt() time.Time {
+	return e.CancelledAt
+}
+
+// EventData returns the event data.
+func (e Cancelled) EventData() map[string]interface{} {
+	return map[string]interface{}{
+		"event_id":     e.ID,
+		"event_name":   e.EventName,
+		"cancelled_at": e.CancelledAt,
+		"reason":       e.Cancellation,
 	}
-}
-
-// Reason returns the cancellation reason
-func (e EventCancelled) Reason() string {
-	return e.reason
-}
-
-// TeamAddedToEvent represents a team being added to an event
-type TeamAddedToEvent struct {
-	domain.BaseDomainEvent
-	teamID TeamID
-}
-
-// NewTeamAddedToEvent creates a new team added to event domain event
-func NewTeamAddedToEvent(eventID domain.AggregateID, teamID TeamID) TeamAddedToEvent {
-	return TeamAddedToEvent{
-		BaseDomainEvent: domain.NewBaseDomainEvent(
-			generateEventID(),
-			eventID,
-			"TeamAddedToEvent",
-			map[string]interface{}{
-				"teamID":  teamID.Value(),
-				"addedAt": time.Now(),
-			},
-		),
-		teamID: teamID,
-	}
-}
-
-// TeamID returns the team ID
-func (e TeamAddedToEvent) TeamID() TeamID {
-	return e.teamID
-}
-
-// TeamRemovedFromEvent represents a team being removed from an event
-type TeamRemovedFromEvent struct {
-	domain.BaseDomainEvent
-	teamID TeamID
-}
-
-// NewTeamRemovedFromEvent creates a new team removed from event domain event
-func NewTeamRemovedFromEvent(eventID domain.AggregateID, teamID TeamID) TeamRemovedFromEvent {
-	return TeamRemovedFromEvent{
-		BaseDomainEvent: domain.NewBaseDomainEvent(
-			generateEventID(),
-			eventID,
-			"TeamRemovedFromEvent",
-			map[string]interface{}{
-				"teamID":    teamID.Value(),
-				"removedAt": time.Now(),
-			},
-		),
-		teamID: teamID,
-	}
-}
-
-// TeamID returns the team ID
-func (e TeamRemovedFromEvent) TeamID() TeamID {
-	return e.teamID
-}
-
-// MatchAddedToEvent represents a match being added to an event
-type MatchAddedToEvent struct {
-	domain.BaseDomainEvent
-	matchID MatchID
-}
-
-// NewMatchAddedToEvent creates a new match added to event domain event
-func NewMatchAddedToEvent(eventID domain.AggregateID, matchID MatchID) MatchAddedToEvent {
-	return MatchAddedToEvent{
-		BaseDomainEvent: domain.NewBaseDomainEvent(
-			generateEventID(),
-			eventID,
-			"MatchAddedToEvent",
-			map[string]interface{}{
-				"matchID": matchID.Value(),
-				"addedAt": time.Now(),
-			},
-		),
-		matchID: matchID,
-	}
-}
-
-// MatchID returns the match ID
-func (e MatchAddedToEvent) MatchID() MatchID {
-	return e.matchID
-}
-
-// generateEventID generates a unique event ID
-func generateEventID() string {
-	return time.Now().Format("20060102150405") + "-" + randomString(6)
-}
-
-// randomString generates a random string of specified length
-func randomString(length int) string {
-	const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
-	b := make([]byte, length)
-	for i := range b {
-		b[i] = charset[time.Now().UnixNano()%int64(len(charset))]
-	}
-	return string(b)
 }

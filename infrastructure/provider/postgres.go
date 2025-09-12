@@ -1,55 +1,61 @@
+// Package provider provides database connection and configuration utilities.
 package provider
 
 import (
+	"context"
 	"database/sql"
-	"fmt"
-	"sync"
+	"os"
 	"time"
 
+	// PostgreSQL driver
 	_ "github.com/lib/pq"
-
-	"github.com/Rusty-Alucard/sp_api/config"
 )
 
-var (
-	instance *sql.DB
-	lock     sync.Mutex
+const (
+	defaultTimeout = 5 * time.Second
 )
 
+// Connect establishes a connection to the PostgreSQL database.
 func Connect() (*sql.DB, error) {
-	lock.Lock()
-	defer lock.Unlock()
-
-	if instance != nil {
-		return instance, nil
+	host := os.Getenv("DB_HOST")
+	if host == "" {
+		host = "localhost"
 	}
 
-	db, err := sql.Open(
-		config.GetConfig().Database.Driver,
-		fmt.Sprintf(
-			"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-			config.GetConfig().Database.Host,
-			config.GetConfig().Database.Port,
-			config.GetConfig().Database.User,
-			config.GetConfig().Database.Password,
-			config.GetConfig().Database.Db,
-		),
-	)
+	port := os.Getenv("DB_PORT")
+	if port == "" {
+		port = "5432"
+	}
+
+	user := os.Getenv("DB_USER")
+	if user == "" {
+		user = "postgres"
+	}
+
+	password := os.Getenv("DB_PASSWORD")
+	if password == "" {
+		password = "password"
+	}
+
+	dbname := os.Getenv("DB_NAME")
+	if dbname == "" {
+		dbname = "sp_api"
+	}
+
+	dsn := "host=" + host + " port=" + port + " user=" + user + 
+		" password=" + password + " dbname=" + dbname + " sslmode=disable"
+
+	db, err := sql.Open("postgres", dsn)
 	if err != nil {
 		return nil, err
 	}
 
-	if err := db.Ping(); err != nil {
+	ctx, cancel := context.WithTimeout(context.Background(), defaultTimeout)
+	defer cancel()
+
+	if err := db.PingContext(ctx); err != nil {
 		return nil, err
 	}
 
-	// setting connection pooling
-	db.SetMaxIdleConns(5)  // コネクションプールの最大数
-	db.SetMaxOpenConns(10) // 接続の最大数
-	db.SetConnMaxIdleTime(10 * time.Second)
-	db.SetConnMaxLifetime(10 * time.Second) // 接続の再利用可能時間
-
-	instance = db
-
-	return instance, nil
+	return db, nil
 }

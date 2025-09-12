@@ -13,7 +13,8 @@
       "gemini-cli": {
         "command": "npx",
         "args": [
-          "@choplin/mcp-gemini-cli"
+          "@choplin/mcp-gemini-cli",
+          "--allow-npx"
         ]
       },
       "context7": {

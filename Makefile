@@ -12,8 +12,8 @@ install-tools:
 	go install \
 		github.com/99designs/gqlgen \
 		golang.org/x/tools/cmd/goimports \
-		honnef.co/go/tools/cmd/staticcheck \
-		github.com/golangci/golangci-lint/cmd/golangci-lint
+		honnef.co/go/tools/cmd/staticcheck
+	go build -o bin/golangci-lint github.com/golangci/golangci-lint/v2/cmd/golangci-lint
 
 install-all: install-go install-go-modules install-tools
 
@@ -27,10 +27,18 @@ staticcheck:
 	staticcheck github.com/Rusty-Alucard/sp_api/...
 
 lint:
-	golangci-lint run
+	@if command -v /opt/homebrew/bin/golangci-lint >/dev/null 2>&1; then \
+		/opt/homebrew/bin/golangci-lint run; \
+	else \
+		golangci-lint run; \
+	fi
 
 lint-fix:
-	golangci-lint run --fix
+	@if command -v /opt/homebrew/bin/golangci-lint >/dev/null 2>&1; then \
+		/opt/homebrew/bin/golangci-lint run --fix; \
+	else \
+		golangci-lint run --fix; \
+	fi
 
 test:
 	go test ./... -v

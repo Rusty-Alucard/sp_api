@@ -1,3 +1,4 @@
+// Package persistence provides data access implementations for domain entities.
 package persistence
 
 import (
@@ -10,46 +11,66 @@ import (
 
 type teamPersistence struct{}
 
+// NewTeamPersistence creates a new instance of TeamRepository.
 func NewTeamPersistence() repository.TeamRepository {
 	return &teamPersistence{}
 }
 
 func (p teamPersistence) FindAll(ctx context.Context) ([]*model.Team, error) {
-
 	db, err := provider.Connect()
 	if err != nil {
 		return nil, err
 	}
+	defer func() {
+		if closeErr := db.Close(); closeErr != nil {
+			_ = closeErr // Ignore close error to avoid masking the original error
+		}
+	}()
 
-	rows, err := db.Query("SELECT * FROM teams")
+	rows, err := db.QueryContext(ctx, "SELECT * FROM teams")
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			_ = closeErr // Ignore close error to avoid masking the original error
+		}
+	}()
 
-	var ret []*model.Team
+	var teams []*model.Team
 	for rows.Next() {
-		var e model.Team
-		if err := rows.Scan(&e.ID, &e.FifaTrigramme, &e.Name, &e.NameJp, &e.Confederation); err != nil {
+		team := &model.Team{}
+		if err := rows.Scan(&team.ID, &team.FifaTrigramme, &team.Name, &team.NameJp, &team.Confederation); err != nil {
 			return nil, err
 		}
-		ret = append(ret, &e)
+		teams = append(teams, team)
 	}
 
-	return ret, nil
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return teams, nil
 }
 
 func (p teamPersistence) Find(ctx context.Context, fifa string) (*model.Team, error) {
-
 	db, err := provider.Connect()
 	if err != nil {
 		return nil, err
 	}
+	defer func() {
+		if closeErr := db.Close(); closeErr != nil {
+			_ = closeErr // Ignore close error to avoid masking the original error
+		}
+	}()
 
-	ret := model.Team{}
-	if err := db.QueryRow("SELECT * FROM teams WHERE fifa_trigramma = $1", fifa).Scan(&ret.ID, &ret.FifaTrigramme, &ret.Name, &ret.NameJp, &ret.Confederation); err != nil {
+	query := "SELECT * FROM teams WHERE fifa_trigramme = $1"
+	team := &model.Team{}
+	err = db.QueryRowContext(ctx, query, fifa).Scan(
+		&team.ID, &team.FifaTrigramme, &team.Name, &team.NameJp, &team.Confederation)
+	if err != nil {
 		return nil, err
 	}
 
-	return &ret, nil
+	return team, nil
 }
