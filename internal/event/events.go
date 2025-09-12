@@ -128,3 +128,4 @@ func (e Cancelled) EventData() map[string]interface{} {
 		"reason":       e.Cancellation,
 	}
 }
+

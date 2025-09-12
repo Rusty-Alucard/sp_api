@@ -9,3 +9,4 @@ exclude-rules:
   - rule: G115  # integer overflow
     paths:
       - graph/generated/
+

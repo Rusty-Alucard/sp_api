@@ -21,5 +21,6 @@
   ],
   "go.testFlags": [
     "-v"
-  ]
+  ],
+  "makefile.configureOnOpen": false
 }

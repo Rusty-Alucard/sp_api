@@ -11,4 +11,5 @@ import (
 type EventRepository interface {
 	FindAll(context.Context) ([]*model.Event, error)
 	Find(context.Context, string) (*model.Event, error)
+	FindByIDs(context.Context, []string) ([]*model.Event, error)
 }

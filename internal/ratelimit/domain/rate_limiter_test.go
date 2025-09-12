@@ -84,4 +84,3 @@ func TestNewRateLimitExceededError(t *testing.T) {
 	assert.Equal(t, remaining, err.Remaining)
 	assert.Equal(t, resetTime, err.ResetTime)
 }
-

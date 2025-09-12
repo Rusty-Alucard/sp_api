@@ -1,0 +1,258 @@
+---
+applyAlways: true
+---
+
+# SP API テスト実装ガイド
+
+## 概要
+
+SP APIプロジェクトにおけるテストコードの実装ガイドラインを定義します。
+
+## テスト戦略
+
+### 1. テストピラミッド
+```
+        E2E Tests (10%)
+       /              \
+   Integration Tests (20%)
+  /                      \
+Unit Tests (70%)
+```
+
+### 2. テストの種類
+
+#### 2.1 単体テスト (Unit Tests)
+- **目的**: 個別の関数・メソッドの動作検証
+- **範囲**: ドメインロジック、ビジネスルール
+- **依存関係**: モックを使用して分離
+- **実行時間**: 高速（< 1秒）
+
+#### 2.2 統合テスト (Integration Tests)
+- **目的**: 複数コンポーネント間の連携検証
+- **範囲**: データベース、外部API、キャッシュ
+- **依存関係**: 実際の外部サービス
+- **実行時間**: 中程度（1-10秒）
+
+#### 2.3 E2Eテスト (End-to-End Tests)
+- **目的**: ユーザーフローの全体検証
+- **範囲**: GraphQL API、認証フロー
+- **依存関係**: 完全なシステム環境
+- **実行時間**: 低速（10秒以上）
+
+## テスト実装パターン
+
+### 1. 単体テストパターン
+
+#### 1.1 基本構造
+```go
+func TestFunctionName(t *testing.T) {
+    // Arrange
+    input := "test input"
+    expected := "expected output"
+    
+    // Act
+    result, err := FunctionName(input)
+    
+    // Assert
+    assert.NoError(t, err)
+    assert.Equal(t, expected, result)
+}
+```
+
+#### 1.2 テーブル駆動テスト
+```go
+func TestFunctionName(t *testing.T) {
+    tests := []struct {
+        name     string
+        input    string
+        expected string
+        wantErr  bool
+    }{
+        {
+            name:     "正常ケース",
+            input:    "valid input",
+            expected: "expected output",
+            wantErr:  false,
+        },
+        {
+            name:     "異常ケース",
+            input:    "",
+            expected: "",
+            wantErr:  true,
+        },
+    }
+    
+    for _, tt := range tests {
+        t.Run(tt.name, func(t *testing.T) {
+            result, err := FunctionName(tt.input)
+            
+            if tt.wantErr {
+                assert.Error(t, err)
+            } else {
+                assert.NoError(t, err)
+                assert.Equal(t, tt.expected, result)
+            }
+        })
+    }
+}
+```
+
+#### 1.3 モックの使用
+```go
+//go:generate mockgen -source=repository.go -destination=mock_repository.go
+
+type MockRepository struct {
+    mock.Mock
+}
+
+func (m *MockRepository) FindByID(ctx context.Context, id string) (*Entity, error) {
+    args := m.Called(ctx, id)
+    return args.Get(0).(*Entity), args.Error(1)
+}
+
+func TestService_FindEntity(t *testing.T) {
+    // Arrange
+    mockRepo := new(MockRepository)
+    service := NewService(mockRepo)
+    
+    expectedEntity := &Entity{ID: "1", Name: "test"}
+    mockRepo.On("FindByID", mock.Anything, "1").Return(expectedEntity, nil)
+    
+    // Act
+    result, err := service.FindEntity(context.Background(), "1")
+    
+    // Assert
+    assert.NoError(t, err)
+    assert.Equal(t, expectedEntity, result)
+    mockRepo.AssertExpectations(t)
+}
+```
+
+### 2. 統合テストパターン
+
+#### 2.1 データベーステスト
+```go
+func TestRepository_Integration(t *testing.T) {
+    // テスト用データベースのセットアップ
+    db := setupTestDB(t)
+    defer cleanupTestDB(t, db)
+    
+    repo := NewRepository(db)
+    
+    // テストデータの準備
+    entity := &Entity{Name: "test"}
+    
+    // テスト実行
+    err := repo.Save(context.Background(), entity)
+    assert.NoError(t, err)
+    
+    // 検証
+    found, err := repo.FindByID(context.Background(), entity.ID)
+    assert.NoError(t, err)
+    assert.Equal(t, entity.Name, found.Name)
+}
+
+func setupTestDB(t *testing.T) *sql.DB {
+    // テスト用データベースの作成
+    // マイグレーションの実行
+    // テストデータの投入
+}
+
+func cleanupTestDB(t *testing.T, db *sql.DB) {
+    // テストデータの削除
+    // データベースのクリーンアップ
+}
+```
+
+## テストデータ管理
+
+### 1. テストフィクスチャ
+```go
+// testdata/fixtures/events.json
+{
+    "events": [
+        {
+            "id": "1",
+            "name": "World Cup 2024",
+            "name_jp": "ワールドカップ 2024"
+        }
+    ]
+}
+
+// テストでの使用
+func loadTestData(t *testing.T) []Event {
+    data, err := os.ReadFile("testdata/fixtures/events.json")
+    require.NoError(t, err)
+    
+    var fixtures struct {
+        Events []Event `json:"events"`
+    }
+    err = json.Unmarshal(data, &fixtures)
+    require.NoError(t, err)
+    
+    return fixtures.Events
+}
+```
+
+### 2. テストデータファクトリ
+```go
+type EventFactory struct{}
+
+func (f *EventFactory) Build(overrides ...func(*Event)) *Event {
+    event := &Event{
+        ID:     generateID(),
+        Name:   "Test Event",
+        NameJp: "テストイベント",
+    }
+    
+    for _, override := range overrides {
+        override(event)
+    }
+    
+    return event
+}
+
+func (f *EventFactory) WithName(name string) func(*Event) {
+    return func(e *Event) {
+        e.Name = name
+    }
+}
+
+// テストでの使用
+func TestEventService(t *testing.T) {
+    factory := &EventFactory{}
+    
+    event := factory.Build(
+        factory.WithName("Custom Event"),
+    )
+    
+    // テスト実行
+}
+```
+
+## ベストプラクティス
+
+### 1. テストの命名
+- テスト関数名: `TestFunctionName_Scenario_ExpectedResult`
+- テストケース名: 日本語で分かりやすく
+
+### 2. アサーション
+- `testify/assert` を使用
+- エラーメッセージを明確に
+- 1つのテストで1つのことを検証
+
+### 3. テストの独立性
+- テスト間でデータを共有しない
+- 各テストで必要なデータをセットアップ
+- テスト後にクリーンアップ
+
+### 4. パフォーマンス
+- 並列実行可能なテストを作成
+- 重い処理は統合テストに分離
+- モックを適切に使用
+
+---
+
+**作成日**: 2024年12月19日  
+**バージョン**: 1.0  
+**承認者**: [承認者名]

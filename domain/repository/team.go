@@ -11,4 +11,5 @@ import (
 type TeamRepository interface {
 	FindAll(context.Context) ([]*model.Team, error)
 	Find(context.Context, string) (*model.Team, error)
+	FindByFifaCodes(context.Context, []string) ([]*model.Team, error)
 }

@@ -74,3 +74,56 @@ func (p teamPersistence) Find(ctx context.Context, fifa string) (*model.Team, er
 
 	return team, nil
 }
+
+func (p teamPersistence) FindByFifaCodes(ctx context.Context, fifaCodes []string) ([]*model.Team, error) {
+	db, err := provider.Connect()
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if closeErr := db.Close(); closeErr != nil {
+			_ = closeErr // Ignore close error to avoid masking the original error
+		}
+	}()
+
+	if len(fifaCodes) == 0 {
+		return []*model.Team{}, nil
+	}
+
+	// Build query with placeholders
+	query := "SELECT * FROM teams WHERE fifa_trigramme IN ("
+	args := make([]interface{}, len(fifaCodes))
+	for i, code := range fifaCodes {
+		if i > 0 {
+			query += ","
+		}
+		query += "$" + string(rune(i+1))
+		args[i] = code
+	}
+	query += ")"
+
+	rows, err := db.QueryContext(ctx, query, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if closeErr := rows.Close(); closeErr != nil {
+			_ = closeErr // Ignore close error to avoid masking the original error
+		}
+	}()
+
+	var teams []*model.Team
+	for rows.Next() {
+		team := &model.Team{}
+		if err := rows.Scan(&team.ID, &team.FifaTrigramme, &team.Name, &team.NameJp, &team.Confederation); err != nil {
+			return nil, err
+		}
+		teams = append(teams, team)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return teams, nil
+}
