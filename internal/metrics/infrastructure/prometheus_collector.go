@@ -9,6 +9,13 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promauto"
 )
 
+const (
+	// SuccessTrue represents successful operation
+	SuccessTrue = "true"
+	// SuccessFalse represents failed operation
+	SuccessFalse = "false"
+)
+
 // PrometheusCollector implements MetricsCollector using Prometheus.
 type PrometheusCollector struct {
 	// GraphQL metrics
@@ -245,9 +252,9 @@ func NewPrometheusCollector() *PrometheusCollector {
 // RecordGraphQLRequest records GraphQL request metrics.
 func (c *PrometheusCollector) RecordGraphQLRequest(ctx context.Context, operation string, complexity int, duration time.Duration, success bool) {
 	agentID := c.getAgentIDFromContext(ctx)
-	successStr := "true"
+	successStr := SuccessTrue
 	if !success {
-		successStr = "false"
+		successStr = SuccessFalse
 	}
 
 	c.graphqlRequestDuration.WithLabelValues(operation, successStr, agentID).Observe(duration.Seconds())
@@ -265,9 +272,9 @@ func (c *PrometheusCollector) RecordGraphQLQueryComplexity(ctx context.Context, 
 
 // RecordAuthenticationAttempt records authentication attempt metrics.
 func (c *PrometheusCollector) RecordAuthenticationAttempt(ctx context.Context, success bool, agentID string) {
-	successStr := "true"
+	successStr := SuccessTrue
 	if !success {
-		successStr = "false"
+		successStr = SuccessFalse
 	}
 
 	c.authAttemptsTotal.WithLabelValues(successStr, "client_credentials").Inc()
@@ -275,9 +282,9 @@ func (c *PrometheusCollector) RecordAuthenticationAttempt(ctx context.Context, s
 
 // RecordTokenValidation records token validation metrics.
 func (c *PrometheusCollector) RecordTokenValidation(ctx context.Context, success bool, agentID string) {
-	successStr := "true"
+	successStr := SuccessTrue
 	if !success {
-		successStr = "false"
+		successStr = SuccessFalse
 	}
 
 	c.tokenValidationsTotal.WithLabelValues(successStr, agentID).Inc()
@@ -316,9 +323,9 @@ func (c *PrometheusCollector) RecordAPQQuery(ctx context.Context, isPersisted bo
 		persistedStr = "true"
 	}
 
-	successStr := "true"
+	successStr := SuccessTrue
 	if !success {
-		successStr = "false"
+		successStr = SuccessFalse
 	}
 
 	c.apqQueriesTotal.WithLabelValues(persistedStr, successStr).Inc()
@@ -352,9 +359,9 @@ func (c *PrometheusCollector) RecordPredictionResult(ctx context.Context, agentI
 
 // RecordDatabaseQuery records database query metrics.
 func (c *PrometheusCollector) RecordDatabaseQuery(ctx context.Context, queryType string, duration time.Duration, success bool) {
-	successStr := "true"
+	successStr := SuccessTrue
 	if !success {
-		successStr = "false"
+		successStr = SuccessFalse
 	}
 
 	c.databaseQueryDuration.WithLabelValues(queryType, successStr).Observe(duration.Seconds())
@@ -363,9 +370,9 @@ func (c *PrometheusCollector) RecordDatabaseQuery(ctx context.Context, queryType
 
 // RecordExternalAPICall records external API call metrics.
 func (c *PrometheusCollector) RecordExternalAPICall(ctx context.Context, service string, duration time.Duration, success bool) {
-	successStr := "true"
+	successStr := SuccessTrue
 	if !success {
-		successStr = "false"
+		successStr = SuccessFalse
 	}
 
 	c.externalAPICallDuration.WithLabelValues(service, successStr).Observe(duration.Seconds())

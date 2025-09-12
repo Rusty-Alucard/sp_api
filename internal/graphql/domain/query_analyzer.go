@@ -87,7 +87,10 @@ func (qa *QueryAnalysis) GetComplexityBreakdown() map[string]int {
 }
 
 // analyzeOperation analyzes a GraphQL operation.
-func (qa *QueryAnalyzer) analyzeOperation(operation *ast.OperationDefinition, variables map[string]interface{}) (int, int, int, map[string]int) {
+func (qa *QueryAnalyzer) analyzeOperation(
+	operation *ast.OperationDefinition,
+	variables map[string]interface{},
+) (int, int, int, map[string]int) {
 	complexity := 0
 	depth := 0
 	fieldCount := 0
@@ -110,7 +113,12 @@ func (qa *QueryAnalyzer) analyzeOperation(operation *ast.OperationDefinition, va
 }
 
 // analyzeSelection analyzes a GraphQL selection.
-func (qa *QueryAnalyzer) analyzeSelection(selection ast.Selection, path string, depth int, variables map[string]interface{}) (int, int, int, map[string]int) {
+func (qa *QueryAnalyzer) analyzeSelection(
+	selection ast.Selection,
+	path string,
+	depth int,
+	variables map[string]interface{},
+) (int, int, int, map[string]int) {
 	switch sel := selection.(type) {
 	case *ast.Field:
 		return qa.analyzeField(sel, path, depth, variables)
@@ -125,7 +133,12 @@ func (qa *QueryAnalyzer) analyzeSelection(selection ast.Selection, path string, 
 }
 
 // analyzeField analyzes a GraphQL field.
-func (qa *QueryAnalyzer) analyzeField(field *ast.Field, path string, depth int, variables map[string]interface{}) (int, int, int, map[string]int) {
+func (qa *QueryAnalyzer) analyzeField(
+	field *ast.Field,
+	path string,
+	depth int,
+	variables map[string]interface{},
+) (int, int, int, map[string]int) {
 	fieldPath := qa.buildFieldPath(path, field.Name)
 
 	// Get complexity rule for this field
@@ -168,7 +181,12 @@ func (qa *QueryAnalyzer) analyzeField(field *ast.Field, path string, depth int, 
 }
 
 // analyzeInlineFragment analyzes an inline fragment.
-func (qa *QueryAnalyzer) analyzeInlineFragment(fragment *ast.InlineFragment, path string, depth int, variables map[string]interface{}) (int, int, int, map[string]int) {
+func (qa *QueryAnalyzer) analyzeInlineFragment(
+	fragment *ast.InlineFragment,
+	path string,
+	depth int,
+	variables map[string]interface{},
+) (int, int, int, map[string]int) {
 	complexity := 0
 	maxDepth := depth
 	fieldCount := 0

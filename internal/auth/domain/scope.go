@@ -118,21 +118,21 @@ func (p Plan) GetRateLimit() RateLimit {
 		}
 	case PlanStandard:
 		return RateLimit{
-			RequestsPerMinute: 50,
-			RequestsPerHour:   1000,
-			RequestsPerDay:    10000,
+			RequestsPerMinute: StandardRequestsPerMinute,
+			RequestsPerHour:   StandardRequestsPerHour,
+			RequestsPerDay:    StandardRequestsPerDay,
 		}
 	case PlanPremium:
 		return RateLimit{
-			RequestsPerMinute: 200,
-			RequestsPerHour:   5000,
-			RequestsPerDay:    50000,
+			RequestsPerMinute: PremiumRequestsPerMinute,
+			RequestsPerHour:   PremiumRequestsPerHour,
+			RequestsPerDay:    PremiumRequestsPerDay,
 		}
 	case PlanEnterprise:
 		return RateLimit{
-			RequestsPerMinute: 1000,
-			RequestsPerHour:   50000,
-			RequestsPerDay:    500000,
+			RequestsPerMinute: EnterpriseRequestsPerMinute,
+			RequestsPerHour:   EnterpriseRequestsPerHour,
+			RequestsPerDay:    EnterpriseRequestsPerDay,
 		}
 	default:
 		return RateLimit{
