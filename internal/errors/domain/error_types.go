@@ -10,28 +10,30 @@ import (
 type ErrorCode string
 
 const (
-	// Authentication errors
+	// ErrorCodeUnauthorized indicates authentication is required
 	ErrorCodeUnauthorized       ErrorCode = "UNAUTHORIZED"
+	// ErrorCodeInvalidToken indicates the provided token is invalid
 	ErrorCodeInvalidToken       ErrorCode = "INVALID_TOKEN"
+	// ErrorCodeTokenExpired indicates the token has expired
 	ErrorCodeTokenExpired       ErrorCode = "TOKEN_EXPIRED"
 	ErrorCodeInsufficientScopes ErrorCode = "INSUFFICIENT_SCOPES"
 
-	// Rate limiting errors
+	// ErrorCodeRateLimitExceeded indicates rate limit has been exceeded
 	ErrorCodeRateLimitExceeded       ErrorCode = "RATE_LIMIT_EXCEEDED"
 	ErrorCodeQueryComplexityExceeded ErrorCode = "QUERY_COMPLEXITY_EXCEEDED"
 
-	// Validation errors
+	// ErrorCodeValidationFailed indicates input validation failed
 	ErrorCodeValidationFailed     ErrorCode = "VALIDATION_FAILED"
 	ErrorCodeInvalidInput         ErrorCode = "INVALID_INPUT"
 	ErrorCodeMissingRequiredField ErrorCode = "MISSING_REQUIRED_FIELD"
 
-	// Business logic errors
+	// ErrorCodeBusinessRuleViolation indicates a business rule was violated
 	ErrorCodeBusinessRuleViolation ErrorCode = "BUSINESS_RULE_VIOLATION"
 	ErrorCodeResourceNotFound      ErrorCode = "RESOURCE_NOT_FOUND"
 	ErrorCodeResourceConflict      ErrorCode = "RESOURCE_CONFLICT"
 	ErrorCodeInsufficientPoints    ErrorCode = "INSUFFICIENT_POINTS"
 
-	// System errors
+	// ErrorCodeInternalServerError indicates an internal server error occurred
 	ErrorCodeInternalServerError  ErrorCode = "INTERNAL_SERVER_ERROR"
 	ErrorCodeServiceUnavailable   ErrorCode = "SERVICE_UNAVAILABLE"
 	ErrorCodeDatabaseError        ErrorCode = "DATABASE_ERROR"
@@ -42,7 +44,9 @@ const (
 type ErrorSeverity string
 
 const (
+	// SeverityLow indicates low severity error
 	SeverityLow      ErrorSeverity = "low"
+	// SeverityMedium indicates medium severity error
 	SeverityMedium   ErrorSeverity = "medium"
 	SeverityHigh     ErrorSeverity = "high"
 	SeverityCritical ErrorSeverity = "critical"

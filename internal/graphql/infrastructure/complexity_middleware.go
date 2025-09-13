@@ -15,9 +15,11 @@ import (
 )
 
 const (
-	// Complexity constants for different field types
+	// BaseComplexityLow represents low complexity for simple fields
 	BaseComplexityLow    = 5
+	// BaseComplexityMedium represents medium complexity for moderate fields
 	BaseComplexityMedium = 10
+	// DefaultComplexity represents default complexity for standard operations
 	DefaultComplexity    = 50
 	StandardComplexity   = 200
 	HighComplexity       = 1000

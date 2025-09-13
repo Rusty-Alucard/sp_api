@@ -11,9 +11,11 @@ import (
 )
 
 const (
-	// Time constants for rate limiting windows
+	// SecondsPerMinute represents seconds in a minute
 	SecondsPerMinute = 60
+	// SecondsPerHour represents seconds in an hour
 	SecondsPerHour   = 3600
+	// SecondsPerDay represents seconds in a day
 	SecondsPerDay    = 86400
 )
 
