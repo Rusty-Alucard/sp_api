@@ -1,55 +1,15 @@
+// Package domain provides shared domain concepts and base implementations.
 package domain
 
-import (
-	"reflect"
-)
-
-// ValueObject represents a domain value object
-// Value objects are immutable and defined by their attributes
+// ValueObject represents the base interface for value objects.
 type ValueObject interface {
 	Equals(other ValueObject) bool
 }
 
-// BaseValueObject provides common functionality for value objects
+// BaseValueObject provides a base implementation for value objects.
 type BaseValueObject struct{}
 
-// Equals compares two value objects for equality
-func (v BaseValueObject) Equals(other ValueObject) bool {
-	if other == nil {
-		return false
-	}
-	return reflect.DeepEqual(v, other)
+// Equals checks if two value objects are equal.
+func (v BaseValueObject) Equals(_ ValueObject) bool {
+	return false // Override in concrete implementations
 }
-
-// StringValueObject represents a string-based value object
-type StringValueObject struct {
-	BaseValueObject
-	value string
-}
-
-// NewStringValueObject creates a new string value object
-func NewStringValueObject(value string) StringValueObject {
-	return StringValueObject{value: value}
-}
-
-// Value returns the string value
-func (v StringValueObject) Value() string {
-	return v.value
-}
-
-// String returns the string representation
-func (v StringValueObject) String() string {
-	return v.value
-}
-
-// Equals compares with another value object
-func (v StringValueObject) Equals(other ValueObject) bool {
-	if other == nil {
-		return false
-	}
-	if otherVO, ok := other.(StringValueObject); ok {
-		return v.value == otherVO.value
-	}
-	return false
-}
-

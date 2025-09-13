@@ -1,55 +1,52 @@
+// Package config provides configuration management for the application.
 package config
 
-import (
-	"fmt"
-	"strings"
+import "os"
 
-	"github.com/fsnotify/fsnotify"
-	"github.com/spf13/viper"
-)
-
-// マッピング用の構造体
+// Config holds the application configuration.
 type Config struct {
-	Database struct {
-		Driver   string
-		User     string
-		Password string
-		Host     string
-		Port     int
-		Db       string
-	}
+	Environment string
+	Database    DatabaseConfig
 }
 
-var cfg *Config
+// DatabaseConfig holds database configuration.
+type DatabaseConfig struct {
+	Host     string
+	Port     string
+	User     string
+	Password string
+	Name     string
+}
 
+var globalConfig *Config
+
+// Init initializes the global configuration.
 func Init(env string) error {
-	viper.SetConfigType("yml")
-	viper.SetConfigName(env)
-	viper.AddConfigPath("config/environments/")
-
-	// 環境変数から設定値を上書きできるように設定
-	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_")) // envの '_' が '.' として扱われる e.g) DATABASE_DSN -> Database.Dsn
-
-	// 読み取り
-	if err := viper.ReadInConfig(); err != nil {
-		return fmt.Errorf("config file read error : %s \n", err)
+	globalConfig = &Config{
+		Environment: env,
+		Database: DatabaseConfig{
+			Host:     getEnvOrDefault("DB_HOST", "localhost"),
+			Port:     getEnvOrDefault("DB_PORT", "5432"),
+			User:     getEnvOrDefault("DB_USER", "postgres"),
+			Password: getEnvOrDefault("DB_PASSWORD", "password"),
+			Name:     getEnvOrDefault("DB_NAME", "sp_api"),
+		},
 	}
-
-	// 構造体にマッピング
-	if err := viper.Unmarshal(&cfg); err != nil {
-		return fmt.Errorf("unmarshal error : %s \n", err)
-	}
-
-	// 更新検知と再読み込み
-	viper.WatchConfig()
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		fmt.Println("Config file changed:", e.Name) // TODO: logger output
-	})
 
 	return nil
 }
 
-func GetConfig() *Config {
-	return cfg
+// Get returns the global configuration.
+func Get() *Config {
+	if globalConfig == nil {
+		panic("config not initialized")
+	}
+	return globalConfig
+}
+
+func getEnvOrDefault(key, defaultValue string) string {
+	if value := os.Getenv(key); value != "" {
+		return value
+	}
+	return defaultValue
 }

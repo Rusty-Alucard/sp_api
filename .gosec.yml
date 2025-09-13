@@ -1,0 +1,12 @@
+# Gosec configuration file
+# Exclude generated code from security scanning
+exclude-dirs:
+  - graph/generated
+  - wire_gen.go
+
+# Exclude specific rules for generated code
+exclude-rules:
+  - rule: G115  # integer overflow
+    paths:
+      - graph/generated/
+

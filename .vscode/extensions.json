@@ -1,0 +1,11 @@
+{
+  "recommendations": [
+    "redhat.vscode-yaml",
+    "golang.go",
+    "ms-vscode.vscode-json",
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "ms-vscode.vscode-typescript-next"
+  ]
+}
+

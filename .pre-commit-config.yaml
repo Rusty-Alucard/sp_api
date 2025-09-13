@@ -1,0 +1,23 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.3.0
+    hooks:
+    -   id: check-yaml
+    -   id: end-of-file-fixer
+    -   id: trailing-whitespace
+    -   id: check-merge-conflict
+    -   id: check-added-large-files
+-   repo: local
+    hooks:
+    -   id: circleci-validate
+        name: circleci-validate
+        entry: make validate-ci
+        language: system
+        files: .circleci/config.yml
+    -   id: go-lint
+        name: go-lint
+        entry: make lint
+        language: system
+        files: \.go$
+        pass_filenames: false
+

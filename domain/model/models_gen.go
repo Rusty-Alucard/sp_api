@@ -3,10 +3,10 @@
 package model
 
 import (
+	"bytes"
 	"fmt"
 	"io"
 	"strconv"
-	"time"
 )
 
 type Coach struct {
@@ -27,7 +27,7 @@ type Event struct {
 type Match struct {
 	ID        string        `json:"id"`
 	Stadium   *Stadium      `json:"stadium"`
-	Kickoff   time.Time     `json:"kickoff"`
+	Kickoff   DateTime      `json:"kickoff"`
 	Category  MatchCategory `json:"category"`
 	Matchups  []*Team       `json:"matchups"`
 	Timelines []*Timeline   `json:"timelines"`
@@ -39,6 +39,9 @@ type Player struct {
 	Number       int      `json:"number"`
 	Birthday     string   `json:"birthday"`
 	JoinedEvents []*Event `json:"joinedEvents"`
+}
+
+type Query struct {
 }
 
 type Stadium struct {
@@ -55,7 +58,7 @@ type Team struct {
 	NameJp        string        `json:"name_jp"`
 	Confederation Confederation `json:"confederation"`
 	JoinedEvents  []*Event      `json:"joinedEvents"`
-	Coach         *Coach        `json:"coach"`
+	Coach         *Coach        `json:"coach,omitempty"`
 	Members       []*Player     `json:"members"`
 }
 
@@ -98,7 +101,7 @@ func (e Confederation) String() string {
 	return string(e)
 }
 
-func (e *Confederation) UnmarshalGQL(v interface{}) error {
+func (e *Confederation) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -113,6 +116,20 @@ func (e *Confederation) UnmarshalGQL(v interface{}) error {
 
 func (e Confederation) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *Confederation) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e Confederation) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
 }
 
 type MatchCategory string
@@ -147,7 +164,7 @@ func (e MatchCategory) String() string {
 	return string(e)
 }
 
-func (e *MatchCategory) UnmarshalGQL(v interface{}) error {
+func (e *MatchCategory) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -162,6 +179,20 @@ func (e *MatchCategory) UnmarshalGQL(v interface{}) error {
 
 func (e MatchCategory) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *MatchCategory) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e MatchCategory) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
 }
 
 type MatchEventType string
@@ -204,7 +235,7 @@ func (e MatchEventType) String() string {
 	return string(e)
 }
 
-func (e *MatchEventType) UnmarshalGQL(v interface{}) error {
+func (e *MatchEventType) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -219,6 +250,20 @@ func (e *MatchEventType) UnmarshalGQL(v interface{}) error {
 
 func (e MatchEventType) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *MatchEventType) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e MatchEventType) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
 }
 
 type Position string
@@ -249,7 +294,7 @@ func (e Position) String() string {
 	return string(e)
 }
 
-func (e *Position) UnmarshalGQL(v interface{}) error {
+func (e *Position) UnmarshalGQL(v any) error {
 	str, ok := v.(string)
 	if !ok {
 		return fmt.Errorf("enums must be strings")
@@ -264,4 +309,18 @@ func (e *Position) UnmarshalGQL(v interface{}) error {
 
 func (e Position) MarshalGQL(w io.Writer) {
 	fmt.Fprint(w, strconv.Quote(e.String()))
+}
+
+func (e *Position) UnmarshalJSON(b []byte) error {
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		return err
+	}
+	return e.UnmarshalGQL(s)
+}
+
+func (e Position) MarshalJSON() ([]byte, error) {
+	var buf bytes.Buffer
+	e.MarshalGQL(&buf)
+	return buf.Bytes(), nil
 }
