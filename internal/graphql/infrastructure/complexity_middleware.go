@@ -25,7 +25,9 @@ const (
 	StandardComplexity   = 200
 	// HighComplexity represents high complexity for complex operations
 	HighComplexity       = 1000
+	// MaxComplexity represents maximum allowed complexity
 	MaxComplexity        = 5000
+	// MinComplexity represents minimum complexity threshold
 	MinComplexity        = 10
 )
 

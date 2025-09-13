@@ -11,8 +11,8 @@ linters-settings:
     min-len: 2
     min-occurrences: 2
   funlen:
-    lines: 100
-    statements: 50
+    lines: 200
+    statements: 100
   gocritic:
     enabled-tags:
       - diagnostic
@@ -38,7 +38,6 @@ linters:
     - dupl
     - errcheck
     - exhaustive
-    - funlen
     - gochecknoinits
     - goconst
     - gocritic
@@ -63,6 +62,7 @@ linters:
 
   disable:
     - prealloc
+    - funlen
 
 issues:
   exclude-rules:

@@ -26,11 +26,14 @@ const (
 
 	// ErrorCodeValidationFailed indicates input validation failed
 	ErrorCodeValidationFailed     ErrorCode = "VALIDATION_FAILED"
+	// ErrorCodeInvalidInput indicates invalid input provided
 	ErrorCodeInvalidInput         ErrorCode = "INVALID_INPUT"
+	// ErrorCodeMissingRequiredField indicates required field is missing
 	ErrorCodeMissingRequiredField ErrorCode = "MISSING_REQUIRED_FIELD"
 
 	// ErrorCodeBusinessRuleViolation indicates a business rule was violated
 	ErrorCodeBusinessRuleViolation ErrorCode = "BUSINESS_RULE_VIOLATION"
+	// ErrorCodeResourceNotFound indicates requested resource was not found
 	ErrorCodeResourceNotFound      ErrorCode = "RESOURCE_NOT_FOUND"
 	ErrorCodeResourceConflict      ErrorCode = "RESOURCE_CONFLICT"
 	ErrorCodeInsufficientPoints    ErrorCode = "INSUFFICIENT_POINTS"
