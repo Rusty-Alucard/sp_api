@@ -62,13 +62,14 @@ jobs:
       - run:
           name: Install golangci-lint
           command: |
-            go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+            mkdir -p bin
+            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b ./bin v2.4.0
       - run:
           name: Run Lint
-          command: golangci-lint run
+          command: ./bin/golangci-lint run
       - run:
           name: Run Lint Fix
-          command: golangci-lint run --fix
+          command: ./bin/golangci-lint run --fix
           when: on_fail
       - save_cache:
           key: go-mod-v7-{{ checksum "go.sum" }}
