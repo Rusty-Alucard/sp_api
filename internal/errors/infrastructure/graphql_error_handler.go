@@ -51,7 +51,7 @@ func (h *GraphQLErrorHandler) ErrorPresenter() graphql.ErrorPresenterFunc {
 		structuredErr := h.convertToStructuredError(err, requestID)
 
 		// Log the error
-		h.logError(structuredErr, ctx)
+		h.logError(ctx, structuredErr)
 
 		// Convert to GraphQL error
 		return h.convertToGraphQLError(structuredErr)
@@ -132,7 +132,7 @@ func (h *GraphQLErrorHandler) getRequestIDFromContext(ctx context.Context) strin
 }
 
 // logError logs the error with appropriate level based on severity.
-func (h *GraphQLErrorHandler) logError(err *errors.StructuredError, ctx context.Context) {
+func (h *GraphQLErrorHandler) logError(ctx context.Context, err *errors.StructuredError) {
 	fields := []interface{}{
 		"code", string(err.Code),
 		"severity", string(err.Severity),

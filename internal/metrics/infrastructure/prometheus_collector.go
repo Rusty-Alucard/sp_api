@@ -250,7 +250,8 @@ func NewPrometheusCollector() *PrometheusCollector {
 }
 
 // RecordGraphQLRequest records GraphQL request metrics.
-func (c *PrometheusCollector) RecordGraphQLRequest(ctx context.Context, operation string, complexity int, duration time.Duration, success bool) {
+func (c *PrometheusCollector) RecordGraphQLRequest(ctx context.Context, operation string, _ int,
+	duration time.Duration, success bool) {
 	agentID := c.getAgentIDFromContext(ctx)
 	successStr := SuccessTrue
 	if !success {
@@ -271,7 +272,7 @@ func (c *PrometheusCollector) RecordGraphQLQueryComplexity(ctx context.Context, 
 }
 
 // RecordAuthenticationAttempt records authentication attempt metrics.
-func (c *PrometheusCollector) RecordAuthenticationAttempt(ctx context.Context, success bool, agentID string) {
+func (c *PrometheusCollector) RecordAuthenticationAttempt(_ context.Context, success bool, _ string) {
 	successStr := SuccessTrue
 	if !success {
 		successStr = SuccessFalse
@@ -281,7 +282,7 @@ func (c *PrometheusCollector) RecordAuthenticationAttempt(ctx context.Context, s
 }
 
 // RecordTokenValidation records token validation metrics.
-func (c *PrometheusCollector) RecordTokenValidation(ctx context.Context, success bool, agentID string) {
+func (c *PrometheusCollector) RecordTokenValidation(_ context.Context, success bool, agentID string) {
 	successStr := SuccessTrue
 	if !success {
 		successStr = SuccessFalse
@@ -291,33 +292,34 @@ func (c *PrometheusCollector) RecordTokenValidation(ctx context.Context, success
 }
 
 // RecordRateLimitHit records rate limit hit metrics.
-func (c *PrometheusCollector) RecordRateLimitHit(ctx context.Context, agentID string, limitType string) {
+func (c *PrometheusCollector) RecordRateLimitHit(_ context.Context, agentID string, limitType string) {
 	c.rateLimitHitsTotal.WithLabelValues(agentID, limitType).Inc()
 }
 
 // RecordRateLimitExceeded records rate limit exceeded metrics.
-func (c *PrometheusCollector) RecordRateLimitExceeded(ctx context.Context, agentID string, limitType string) {
+func (c *PrometheusCollector) RecordRateLimitExceeded(_ context.Context, agentID string, limitType string) {
 	c.rateLimitExceededTotal.WithLabelValues(agentID, limitType).Inc()
 }
 
 // RecordDataLoaderBatch records DataLoader batch metrics.
-func (c *PrometheusCollector) RecordDataLoaderBatch(ctx context.Context, loaderType string, batchSize int, duration time.Duration) {
+func (c *PrometheusCollector) RecordDataLoaderBatch(_ context.Context, loaderType string, batchSize int,
+	duration time.Duration) {
 	c.dataloaderBatchDuration.WithLabelValues(loaderType).Observe(duration.Seconds())
 	c.dataloaderBatchSize.WithLabelValues(loaderType).Observe(float64(batchSize))
 }
 
 // RecordDataLoaderCacheHit records DataLoader cache hit metrics.
-func (c *PrometheusCollector) RecordDataLoaderCacheHit(ctx context.Context, loaderType string) {
+func (c *PrometheusCollector) RecordDataLoaderCacheHit(_ context.Context, loaderType string) {
 	c.dataloaderCacheHitsTotal.WithLabelValues(loaderType).Inc()
 }
 
 // RecordDataLoaderCacheMiss records DataLoader cache miss metrics.
-func (c *PrometheusCollector) RecordDataLoaderCacheMiss(ctx context.Context, loaderType string) {
+func (c *PrometheusCollector) RecordDataLoaderCacheMiss(_ context.Context, loaderType string) {
 	c.dataloaderCacheMissesTotal.WithLabelValues(loaderType).Inc()
 }
 
 // RecordAPQQuery records APQ query metrics.
-func (c *PrometheusCollector) RecordAPQQuery(ctx context.Context, isPersisted bool, success bool) {
+func (c *PrometheusCollector) RecordAPQQuery(_ context.Context, isPersisted bool, success bool) {
 	persistedStr := "false"
 	if isPersisted {
 		persistedStr = "true"
@@ -332,22 +334,22 @@ func (c *PrometheusCollector) RecordAPQQuery(ctx context.Context, isPersisted bo
 }
 
 // RecordAPQCacheHit records APQ cache hit metrics.
-func (c *PrometheusCollector) RecordAPQCacheHit(ctx context.Context) {
+func (c *PrometheusCollector) RecordAPQCacheHit(_ context.Context) {
 	c.apqCacheHitsTotal.WithLabelValues().Inc()
 }
 
 // RecordAPQCacheMiss records APQ cache miss metrics.
-func (c *PrometheusCollector) RecordAPQCacheMiss(ctx context.Context) {
+func (c *PrometheusCollector) RecordAPQCacheMiss(_ context.Context) {
 	c.apqCacheMissesTotal.WithLabelValues().Inc()
 }
 
 // RecordPredictionCreated records prediction creation metrics.
-func (c *PrometheusCollector) RecordPredictionCreated(ctx context.Context, agentID string, predictionType string) {
+func (c *PrometheusCollector) RecordPredictionCreated(_ context.Context, agentID string, predictionType string) {
 	c.predictionsCreatedTotal.WithLabelValues(agentID, predictionType).Inc()
 }
 
 // RecordPredictionResult records prediction result metrics.
-func (c *PrometheusCollector) RecordPredictionResult(ctx context.Context, agentID string, correct bool, points int) {
+func (c *PrometheusCollector) RecordPredictionResult(_ context.Context, agentID string, correct bool, points int) {
 	correctStr := "true"
 	if !correct {
 		correctStr = "false"
@@ -358,7 +360,8 @@ func (c *PrometheusCollector) RecordPredictionResult(ctx context.Context, agentI
 }
 
 // RecordDatabaseQuery records database query metrics.
-func (c *PrometheusCollector) RecordDatabaseQuery(ctx context.Context, queryType string, duration time.Duration, success bool) {
+func (c *PrometheusCollector) RecordDatabaseQuery(_ context.Context, queryType string,
+	duration time.Duration, success bool) {
 	successStr := SuccessTrue
 	if !success {
 		successStr = SuccessFalse
@@ -369,7 +372,8 @@ func (c *PrometheusCollector) RecordDatabaseQuery(ctx context.Context, queryType
 }
 
 // RecordExternalAPICall records external API call metrics.
-func (c *PrometheusCollector) RecordExternalAPICall(ctx context.Context, service string, duration time.Duration, success bool) {
+func (c *PrometheusCollector) RecordExternalAPICall(_ context.Context, service string,
+	duration time.Duration, success bool) {
 	successStr := SuccessTrue
 	if !success {
 		successStr = SuccessFalse

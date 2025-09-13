@@ -36,7 +36,8 @@ func (qa *QueryAnalyzer) AddComplexityRule(fieldPath string, rule ComplexityRule
 }
 
 // AnalyzeQuery analyzes a GraphQL query and returns its complexity.
-func (qa *QueryAnalyzer) AnalyzeQuery(ctx context.Context, query string, variables map[string]interface{}) (*QueryAnalysis, error) {
+func (qa *QueryAnalyzer) AnalyzeQuery(_ context.Context, query string, variables map[string]interface{}) (
+	*QueryAnalysis, error) {
 	// Parse the query
 	doc, err := parser.ParseQuery(&ast.Source{Input: query})
 	if err != nil {
