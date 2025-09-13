@@ -10,6 +10,9 @@ linters-settings:
   goconst:
     min-len: 2
     min-occurrences: 2
+  funlen:
+    lines: 100
+    statements: 50
   gocritic:
     enabled-tags:
       - diagnostic
@@ -63,7 +66,7 @@ linters:
 
 issues:
   exclude-rules:
-    - path: _test\.go
+    - path: ".*_test.go$"
       linters:
         - mnd
         - funlen

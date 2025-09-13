@@ -21,7 +21,9 @@ const (
 	BaseComplexityMedium = 10
 	// DefaultComplexity represents default complexity for standard operations
 	DefaultComplexity    = 50
+	// StandardComplexity represents standard complexity for normal operations
 	StandardComplexity   = 200
+	// HighComplexity represents high complexity for complex operations
 	HighComplexity       = 1000
 	MaxComplexity        = 5000
 	MinComplexity        = 10

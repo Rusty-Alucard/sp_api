@@ -16,10 +16,12 @@ const (
 	ErrorCodeInvalidToken       ErrorCode = "INVALID_TOKEN"
 	// ErrorCodeTokenExpired indicates the token has expired
 	ErrorCodeTokenExpired       ErrorCode = "TOKEN_EXPIRED"
+	// ErrorCodeInsufficientScopes indicates insufficient permissions
 	ErrorCodeInsufficientScopes ErrorCode = "INSUFFICIENT_SCOPES"
 
 	// ErrorCodeRateLimitExceeded indicates rate limit has been exceeded
 	ErrorCodeRateLimitExceeded       ErrorCode = "RATE_LIMIT_EXCEEDED"
+	// ErrorCodeQueryComplexityExceeded indicates query complexity limit exceeded
 	ErrorCodeQueryComplexityExceeded ErrorCode = "QUERY_COMPLEXITY_EXCEEDED"
 
 	// ErrorCodeValidationFailed indicates input validation failed
@@ -48,7 +50,9 @@ const (
 	SeverityLow      ErrorSeverity = "low"
 	// SeverityMedium indicates medium severity error
 	SeverityMedium   ErrorSeverity = "medium"
+	// SeverityHigh indicates high severity error
 	SeverityHigh     ErrorSeverity = "high"
+	// SeverityCritical indicates critical severity error
 	SeverityCritical ErrorSeverity = "critical"
 )
 
