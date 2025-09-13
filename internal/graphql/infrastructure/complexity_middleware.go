@@ -122,7 +122,7 @@ func (m *ComplexityMiddleware) getComplexityLimit(claims *authapp.AgentClaims) i
 	case "premium":
 		return HighComplexity
 	case "enterprise":
-		return DefaultComplexity00
+		return DefaultComplexity
 	default:
 		return MinComplexity
 	}
@@ -264,7 +264,7 @@ func (m *HTTPComplexityMiddleware) getComplexityLimit(claims *authapp.AgentClaim
 	case "premium":
 		return HighComplexity
 	case "enterprise":
-		return DefaultComplexity00
+		return DefaultComplexity
 	default:
 		return MinComplexity
 	}

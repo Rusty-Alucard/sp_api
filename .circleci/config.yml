@@ -31,6 +31,9 @@ jobs:
           name: Install Dependencies
           command: go mod download
       - run:
+          name: Install gotestsum
+          command: go install gotest.tools/gotestsum@latest
+      - run:
           name: Run Tests
           command: |
             mkdir -p /tmp/test-reports
@@ -60,7 +63,7 @@ jobs:
           name: Install golangci-lint
           command: |
             mkdir -p bin
-            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b ./bin v2.4.0
+            curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b ./bin v1.61.0
       - run:
           name: Run Lint
           command: ./bin/golangci-lint run
@@ -163,6 +166,9 @@ jobs:
       - run:
           name: Install Dependencies
           command: go mod download
+      - run:
+          name: Install gotestsum (Go << parameters.go_version >>)
+          command: go install gotest.tools/gotestsum@latest
       - run:
           name: Run Tests (Go << parameters.go_version >>)
           command: |

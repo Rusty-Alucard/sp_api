@@ -85,7 +85,7 @@ func (l *loader[K, V]) LoadMany(ctx context.Context, keys []K) ([]V, error) {
 		cachedValues := make([]V, 0, len(keys))
 		uncachedKeys := make([]K, 0, len(keys))
 
-		for i, key := range keys {
+		for _, key := range keys {
 			if value, found := l.cache.Get(key); found {
 				cachedValues = append(cachedValues, value)
 			} else {
