@@ -35,7 +35,9 @@ const (
 	ErrorCodeBusinessRuleViolation ErrorCode = "BUSINESS_RULE_VIOLATION"
 	// ErrorCodeResourceNotFound indicates requested resource was not found
 	ErrorCodeResourceNotFound      ErrorCode = "RESOURCE_NOT_FOUND"
+	// ErrorCodeResourceConflict indicates resource conflict occurred
 	ErrorCodeResourceConflict      ErrorCode = "RESOURCE_CONFLICT"
+	// ErrorCodeInsufficientPoints indicates insufficient points for operation
 	ErrorCodeInsufficientPoints    ErrorCode = "INSUFFICIENT_POINTS"
 
 	// ErrorCodeInternalServerError indicates an internal server error occurred

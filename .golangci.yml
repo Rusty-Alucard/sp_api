@@ -29,6 +29,12 @@ linters-settings:
     allow-unused: false
     require-explanation: false
     require-specific: false
+  revive:
+    rules:
+      - name: stuttering
+        disabled: true
+      - name: exported
+        disabled: true
 
 linters:
   enable:
@@ -52,7 +58,6 @@ linters:
     - nakedret
     - noctx
     - nolintlint
-    - revive
     - rowserrcheck
     - staticcheck
     - unconvert
@@ -63,6 +68,7 @@ linters:
   disable:
     - prealloc
     - funlen
+    - revive
 
 issues:
   exclude-rules:
